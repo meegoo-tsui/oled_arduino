@@ -1,0 +1,369 @@
+#include <SPI.h>
+#include <avr/pgmspace.h>
+
+//定义RAM内变量
+unsigned char ram_val;
+//定义flash内变量
+const unsigned char  show2[] PROGMEM = 
+{
+/*0XF7,0X7D,0XF7,0X3D,0XEF,0X1C,0XE6,0XDB,0XE6,0X9A,0XD5,0XF8,0XE5,0X34,0XFC,0X0C,
+0XFB,0XCA,0XFB,0XC8,0XFA,0XA0,0XFA,0XC0,0XFA,0XC0,0XFA,0XA0,0XFA,0XC0,0XFA,0XE0,
+0XFA,0XE0,0XFB,0X23,0XFB,0XC7,0XF3,0XE8,0XFE,0XB7,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,
+0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X9D,0XF7,0X9E,
+0XF7,0X9E,0XF7,0XBE,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,
+0XEF,0X7D,0XEF,0X5D,0XE7,0X3C,0XDE,0XFB,0XDE,0XDB,0XCE,0X79,0XC6,0X18,0XA5,0X55,
+0X9D,0X35,0X3A,0X8B,0X00,0XA4,0X08,0X42,0X00,0X01,0X00,0X42,0X00,0X83,0X09,0X04,
+0X11,0X85,0X01,0X24,0X19,0XA7,0XD6,0XFB,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,0XF7,0X9E,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XEF,0X7D,
+0XEF,0X5D,0XE7,0X5C,0XE7,0X1B,0XDE,0XFA,0XD6,0XB9,0XCE,0X37,0XC5,0XD3,0XCD,0X91,
+0XE5,0XE0,0XEE,0X00,0XFE,0X60,0XFE,0XE0,0XFE,0XE0,0XFE,0XC0,0XFE,0XC0,0XFF,0X68,
+0XFF,0X01,0XFF,0X20,0XFF,0X23,0XFF,0XFC,0XFF,0XDE,0XFF,0XDE,0XFF,0XDE,0XFF,0XFE,
+0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XFF,0XFF,0XFF,0XFF,0XDF,0XFF,0XDF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XDF,
+0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XF7,0XBE,0XF7,0XBE,0XF7,0X9E,
+0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XEF,0X5D,0XE7,0X1C,0XDE,0XDB,0XD6,0X99,0XC6,0X58,
+0XF7,0X5D,0XEF,0X1C,0XE6,0XFC,0XE6,0X9B,0XDE,0X39,0XE5,0X54,0XF4,0X0C,0XFB,0XAA,
+0XFB,0XE9,0XF2,0XA0,0XFA,0XA0,0XFA,0XA0,0XFA,0XC0,0XFA,0XC0,0XFA,0XE0,0XFA,0XC0,
+0XFB,0X02,0XFB,0XC7,0XFC,0X08,0XF6,0X16,0XF7,0X5C,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,
+0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,
+0XEF,0X5D,0XEF,0X5D,0XE7,0X3C,0XDE,0XFB,0XD6,0XBA,0XCE,0X79,0XBD,0XF8,0XA5,0X35,
+0X8C,0XD3,0X3A,0X8B,0X00,0X83,0X00,0X83,0X00,0X22,0X00,0X42,0X00,0X62,0X2A,0X08,
+0X00,0XE3,0X01,0X44,0X11,0XA6,0XE7,0X9D,0XEF,0X5D,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XEF,0X7D,
+0XEF,0X5D,0XE7,0X3C,0XE7,0X3C,0XDE,0XFB,0XDE,0XDA,0XCE,0X58,0XC5,0XD4,0XC5,0XB2,
+0XDD,0XE3,0XEE,0X00,0XEE,0X00,0XFE,0XC0,0XFE,0XC0,0XFE,0XC0,0XFE,0XE0,0XF6,0XE2,
+0XFF,0X46,0XFF,0X00,0XFF,0X20,0XFF,0XD7,0XFF,0XFE,0XFF,0XFE,0XFF,0XDE,0XFF,0XFE,
+0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XDE,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XDF,
+0XFF,0XFF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XF7,0XBE,0XF7,0XBE,
+0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XEF,0X7D,0XEF,0X5D,0XE7,0X3C,0XDE,0XFB,0XD6,0XBA,
+0XEF,0X3C,0XEE,0XFC,0XE6,0X9A,0XDE,0X39,0XE5,0X95,0XF4,0X4D,0XF3,0XCA,0XFB,0XC9,
+0XF2,0XA1,0XFA,0XA0,0XFA,0XA0,0XFA,0XA0,0XFA,0XA0,0XFA,0XC0,0XFA,0XE0,0XF2,0XE1,
+0XFB,0XA6,0XFB,0XC8,0XED,0X31,0XF7,0X5C,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,
+0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,
+0XEF,0X7D,0XEF,0X5D,0XE7,0X3C,0XDE,0XFB,0XD6,0XBA,0XCE,0X79,0XB5,0XD7,0XA5,0X55,
+0X6B,0XCF,0X32,0X8A,0X00,0X62,0X00,0X22,0X00,0X22,0X00,0X62,0X00,0X83,0X5B,0X8E,
+0X00,0XE3,0X01,0X45,0X21,0XE7,0XEF,0X7D,0XEF,0X5D,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,
+0XEF,0X7D,0XEF,0X5D,0XE7,0X3C,0XE7,0X1B,0XDE,0XFA,0XD6,0X99,0XC5,0XF5,0XC5,0XB3,
+0XD5,0XCA,0XED,0XE0,0XEE,0X00,0XFE,0XA0,0XFE,0XE0,0XFE,0XC0,0XFE,0XC0,0XFE,0XE0,
+0XFF,0X8B,0XFF,0X00,0XFF,0X40,0XFF,0X4C,0XFF,0XFE,0XFF,0XDE,0XFF,0XFE,0XFF,0XFE,
+0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XDE,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XFF,0XFF,0XFF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XF7,0XBE,
+0XF7,0XBE,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XEF,0X5D,0XE7,0X3C,0XE7,0X1C,
+0XEE,0XFC,0XE6,0XBB,0XDE,0X39,0XDD,0X96,0XEC,0X0D,0XFB,0XAB,0XF3,0X89,0XF2,0XA1,
+0XFA,0X80,0XFA,0X80,0XFA,0XA0,0XFA,0XC0,0XFA,0XC0,0XFA,0XC0,0XFA,0XC1,0XFB,0XA6,
+0XFB,0XC7,0XEC,0XCF,0XF7,0X5C,0XF7,0X7C,0XF7,0X7D,0XF7,0X9D,0XF7,0X7D,0XF7,0X7D,
+0XF7,0X7D,0XF7,0X7D,0XF7,0X9E,0XF7,0X7D,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0XBE,
+0XF7,0XBE,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,
+0XEF,0X5D,0XEF,0X5D,0XE7,0X3C,0XDE,0XFB,0XD6,0XBA,0XCE,0X59,0XB5,0XB7,0XA5,0X35,
+0X4A,0XEC,0X2A,0X4A,0X00,0X21,0X00,0X21,0X00,0X42,0X00,0X42,0X00,0XA3,0X63,0XCF,
+0X01,0X03,0X11,0XC7,0X32,0X28,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,
+0XEF,0X7D,0XEF,0X5D,0XEF,0X5C,0XE7,0X1B,0XDE,0XFA,0XD6,0XB9,0XCE,0X36,0XC5,0XD4,
+0XCD,0XB0,0XED,0XE1,0XF6,0X00,0XFE,0X60,0XFE,0XC0,0XFE,0XC0,0XFE,0XC0,0XFE,0XE0,
+0XFF,0X69,0XFF,0X21,0XFF,0X20,0XFF,0X23,0XFF,0XFD,0XFF,0XDE,0XFF,0XDE,0XFF,0XDE,
+0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XDE,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XFF,0XFF,0XFF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XF7,0XBE,0XF7,0XBE,
+0XF7,0XBE,0XF7,0XBE,0XF7,0XBE,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XEF,0X5D,0XE7,0X3C,
+0XE6,0XBB,0XDE,0X3A,0XDD,0XB7,0XF4,0X2E,0XFB,0XEB,0XF3,0X8A,0XF2,0X81,0XFA,0X80,
+0XFA,0X80,0XFA,0XA0,0XFA,0XA0,0XFA,0XA0,0XFA,0XC0,0XFA,0XA0,0XFB,0X86,0XFB,0XC7,
+0XEC,0X4C,0XF7,0X7C,0XF7,0X5C,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,0XF7,0X7D,
+0XF7,0X7D,0XF7,0X7D,0XF7,0X9D,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0XBE,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XEF,0X7D,
+0XEF,0X5D,0XEF,0X5D,0XE7,0X1C,0XDE,0XFB,0XD6,0X9A,0XC6,0X59,0XAD,0X97,0XA5,0X55,
+0X42,0XAB,0X21,0XE8,0X00,0X01,0X00,0X01,0X00,0X22,0X00,0XA3,0X00,0XA3,0X5B,0XAE,
+0X01,0X04,0X11,0XE8,0X53,0X2C,0XEF,0X5D,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,0XF7,0X9E,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,
+0XEF,0X7D,0XEF,0X5D,0XEF,0X5C,0XE7,0X3B,0XDE,0XFB,0XDE,0XDA,0XD6,0X78,0XC5,0XD4,
+0XC5,0XB3,0XE5,0XE3,0XEE,0X00,0XEE,0X00,0XFE,0XC0,0XFE,0XE0,0XFE,0XC0,0XFE,0XE0,
+0XF7,0X03,0XF7,0X25,0XFF,0X20,0XFF,0X40,0XFF,0XD7,0XFF,0XDE,0XFF,0XDE,0XFF,0XDE,
+0XFF,0XDE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XFF,0XFF,0XFF,0XFF,0XDF,0XFF,0XFF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,
+0XF7,0XBE,0XF7,0XBE,0XF7,0XBE,0XF7,0XBE,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XE7,0X3C,
+0XDE,0X5A,0XDD,0XD7,0XEC,0X4F,0XF3,0XCB,0XF3,0X69,0XF2,0XC3,0XFA,0X60,0XFA,0X60,
+0XFA,0X80,0XFA,0XA0,0XFA,0XA0,0XFA,0XC0,0XFA,0XA0,0XFB,0X85,0XFB,0XC8,0XF3,0XEA,
+0XFF,0X3C,0XF7,0X5D,0XF7,0X5C,0XF7,0X7C,0XF7,0X7D,0XEF,0X7C,0XF7,0X7D,0XF7,0X7D,
+0XF7,0X7D,0XF7,0X9D,0XF7,0X7E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0XBE,0XF7,0X9E,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0XBE,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,0XEF,0X7D,
+0XEF,0X5D,0XE7,0X3C,0XE7,0X1C,0XDE,0XDB,0XD6,0X9A,0XC6,0X39,0XAD,0X76,0XA5,0X55,
+0X42,0XAB,0X11,0X66,0X00,0X42,0X00,0X01,0X00,0X42,0X00,0X83,0X00,0X83,0X3A,0XAA,
+0X01,0X25,0X11,0X86,0X9D,0X34,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,0XEF,0X7D,0XF7,0X9E,
+0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,0XF7,0X9E,
+0XEF,0X7D,0XEF,0X5D,0XEF,0X5D,0XE7,0X3C,0XE7,0X1B,0XDE,0XDA,0XD6,0X99,0XC5,0XF5,
+0XC5,0XB3,0XDD,0XE9,0XEE,0X00,0XEE,0X00,0XFE,0XA0,0XFE,0XC0,0XFE,0XC0,0XFE,0XE0,
+0XFE,0XE0,0XFF,0XAC,0XFF,0X00,0XFF,0X40,0XF7,0X6B,0XFF,0XFD,0XFF,0XDE,0XFF,0XFE,
+0XFF,0XFE,0XFF,0XFF,0XFF,0XFE,0XFF,0XFE,0XFF,0XFE,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XDF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,
+0XFF,0XDF,0XFF,0XDF,0XFF,0XFF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,0XFF,0XDF,
+0XFF,0XDF,0XFF,0XDF,0XF7,0XBE,0XF7,0XBE,0XF7,0XBE,0XF7,0X9E,0XF7,0X9E,0XEF,0X7D,
+*/};
+
+
+
+#define RES  8  //Gadgeteer PIN 4
+#define DC  A2   //Gadgeteer PIN 5
+#define CS  A0   //Gadgeteer PIN 6
+#define PW  A1
+
+//SPI Initialization 
+void spi_init(void)
+{
+     SPI.begin();
+     SPI.setBitOrder(MSBFIRST);
+     SPI.setClockDivider(SPI_CLOCK_DIV2);//SCK frequency
+     SPI.setDataMode(SPI_MODE3);
+}
+//发送命令
+void Write_Command(unsigned char COM)
+{
+     digitalWrite(CS,LOW);
+     digitalWrite(DC,LOW);
+     SPI.transfer(COM);
+     digitalWrite(DC,HIGH);
+     digitalWrite(CS,HIGH);
+}
+//发送数据
+void Write_Data(unsigned char DATA)
+{
+     digitalWrite(CS,LOW);
+     digitalWrite(DC,HIGH);
+     SPI.transfer(DATA);
+     digitalWrite(DC,HIGH);
+     digitalWrite(CS,HIGH);
+}
+//设置OLED行列地址
+void Set_Address(unsigned char a,unsigned char b,unsigned char c,unsigned char d)
+{
+     Write_Command(0x15);//set column address
+     Write_Data(a);//start address
+     Write_Data(b);//end address
+    
+     Write_Command(0x75);//set row address
+     Write_Data(c);//start address
+     Write_Data(d);//end address
+}
+//OLED UG2828初始化
+void SSD1351(void)
+{  
+     Write_Command(0xfd);//set command lock
+     Write_Data(0x12);
+     Write_Command(0xfd);//set command lock
+     Write_Data(0xb1);
+     Write_Command(0xae);//display off
+     Write_Command(0x15);//set column address
+     Write_Data(0x00);
+     Write_Data(0x7f);
+     Write_Command(0x75);//set row address
+     Write_Data(0x00);
+     Write_Data(0x7f);
+     Write_Command(0x5c);//set write ram
+     Write_Command(0x5d);//set  read ram
+     Write_Command(0xa0);//set re-map&color depth
+     Write_Data(0x74);
+     Write_Command(0xa1);//set display start line
+     Write_Data(0x00);
+     Write_Command(0xa2);//set display offset
+     Write_Data(0x00);
+     Write_Command(0xa6);//set display mode 
+     Write_Command(0xab);//funcion selection
+     Write_Data(0x01);
+    // Write_Command(0xaf);//set display on
+     Write_Command(0xb1);//set phase length
+     Write_Data(0x32);               
+     Write_Command(0xb3); //display clock divider / oscillator frequency
+     Write_Data(0xD0); // 0xf1->0xd0
+     Write_Command(0xb4);//set segment low voltage
+     Write_Data(0xa0);
+     Write_Data(0xb5);
+     Write_Data(0x55);
+     Write_Command(0xb5);//set gpio
+     Write_Data(0x0a);
+     Write_Command(0xb6);//set second pre-charge period
+     Write_Data(0x01);
+     Write_Command(0xb8);//gamma look up table 
+     Write_Data(0x02);
+     Write_Data(0x03);
+     Write_Data(0x04);
+     Write_Data(0x05);
+     Write_Data(0x06);
+     Write_Data(0x07);
+     Write_Data(0x08);
+     Write_Data(0x09);
+     Write_Data(0x0a);
+     Write_Data(0x0b);
+     Write_Data(0x0c);
+     Write_Data(0x0d);
+     Write_Data(0x0e);
+     Write_Data(0x0f);
+     Write_Data(0x10);
+     Write_Data(0x11);
+     Write_Data(0x12);
+     Write_Data(0x13);
+     Write_Data(0x15);
+     Write_Data(0x17);
+     Write_Data(0x19);
+     Write_Data(0x1b);
+     Write_Data(0x1d);
+     Write_Data(0x1f);
+     Write_Data(0x21);
+     Write_Data(0x23);
+     Write_Data(0x25);
+     Write_Data(0x27);
+     Write_Data(0x2a);
+     Write_Data(0x2d);
+     Write_Data(0x30);
+     Write_Data(0x33);
+     Write_Data(0x36);
+     Write_Data(0x39);
+     Write_Data(0x3c);
+     Write_Data(0x3f);
+     Write_Data(0x42);
+     Write_Data(0x45);
+     Write_Data(0x48);
+     Write_Data(0x4c);
+     Write_Data(0x50);
+     Write_Data(0x54);
+     Write_Data(0x58);
+     Write_Data(0x5c);
+     Write_Data(0x60);
+     Write_Data(0x64);
+     Write_Data(0x68);
+     Write_Data(0x6c);
+     Write_Data(0x70);
+     Write_Data(0x74);
+     Write_Data(0x78);
+     Write_Data(0x7d);
+     Write_Data(0x82);
+     Write_Data(0x87);
+     Write_Data(0x8c);
+     Write_Data(0x91);
+     Write_Data(0x96);
+     Write_Data(0x9b);
+     Write_Data(0xa0);
+     Write_Data(0xa5);
+     Write_Data(0xaa);
+     Write_Data(0xaf);
+     Write_Data(0xb4);
+     Write_Command(0xbb);//set pre-charge period
+     Write_Data(0x17);
+     Write_Command(0xbe);//set vcomh voltage
+     Write_Data(0x05);
+     Write_Command(0xc1);//set contrast current 
+     Write_Data(0xc8);
+     Write_Data(0x80);
+     Write_Data(0xc8);
+     Write_Command(0xc7);//set master current control
+     Write_Data(0x0f);
+     Write_Command(0xca);//set multiplex ratio
+     Write_Data(0x7f);
+ //    Write_Command(0xaf);//set display on    
+}
+//填充颜色
+void fill(unsigned char data1,unsigned char data2)
+{
+    unsigned int i,j;
+
+    Set_Address(0x00,0x7f,0x00,0x7f);
+    Write_Command(0x5C);
+
+    for(i=0;i<128;i++)
+    {
+	 for(j=0;j<128;j++)
+         {
+	     Write_Data(data1);
+             Write_Data(data2);
+         }
+    }
+}
+//显示图片
+void picture1()
+{
+    unsigned int i,j;
+    unsigned int x=0;
+    byte ram_val;
+    
+    Set_Address(0x00,0x7f,0x00,0x79);
+    Write_Command(0x5C);
+    
+    for(i=0;i<122;i++)
+    {
+	 for(j=0;j<128;j++)
+         {
+     //       ram_val=pgm_read_byte(&(show1[x++]));//从flash中读取变量
+	//    Write_Data(ram_val);
+      //      ram_val=pgm_read_byte(&(show1[x++]));//从flash中读取变量
+//	    Write_Data(ram_val);
+         }
+    }
+}
+//显示图片
+void picture2()
+{
+    unsigned int i,j;
+    unsigned int x=0;
+ 
+   
+    Set_Address(0x00,0x7f,0x7a,0x7f);
+    Write_Command(0x5C);
+    
+    for(i=0;i<6;i++)
+    {
+	 for(j=0;j<128;j++)
+         {
+            ram_val=pgm_read_byte(&(show2[x++]));//从flash中读取变量
+	    Write_Data(ram_val);
+            ram_val=pgm_read_byte(&(show2[x++]));//从flash中读取变量
+	    Write_Data(ram_val);
+         }
+    }
+}
+
+void setup()
+{
+    //端口模式设置
+     pinMode(RES,OUTPUT);
+     pinMode(DC,OUTPUT);
+     pinMode(CS,OUTPUT);
+     
+     pinMode(PW, OUTPUT);
+     digitalWrite(PW, HIGH);
+     
+     spi_init();
+}
+
+void loop()
+{
+     //复位
+     digitalWrite(RES,HIGH);   delay(100);
+     digitalWrite(RES,LOW);    delay(100);
+     digitalWrite(RES,HIGH);   delay(100);
+     // 初始化
+     SSD1351();
+     //红色
+     fill(0xf8,0x00); 
+      Write_Command(0xaf);//set display on    
+    
+     //绿色
+     fill(0x07,0xe0);
+     //蓝色
+     fill(0x00,0x1f);
+  //  delay(3000);
+     fill(0x07,0x07);
+    
+     while(1)
+     {
+     //蓝色
+  //   fill(0x00,0x1f);
+         //显示一张图片
+  //       picture1();
+   //      picture2();
+     }
+}
+
+
