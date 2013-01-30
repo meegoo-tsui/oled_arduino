@@ -14,6 +14,7 @@
 #define __LIB_SSD1351OLED_H
 
 /* Includes ------------------------------------------------------------------*/
+#include <SPI.h>
 
 /* Exported types ------------------------------------------------------------*/
 typedef struct
@@ -69,6 +70,15 @@ typedef enum
 /* Exported macro ------------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
+class SSD1351OLED {
+public:
+	void init(void);
+
+private:
+	
+};
+
+extern SSD1351OLED SSD1351Oled;  // SSD1351OLED object 
 
 #endif /* __LIB_SSD1351OLED_H */
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/

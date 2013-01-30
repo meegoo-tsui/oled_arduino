@@ -1,5 +1,5 @@
-#include <SPI.h>
 #include <avr/pgmspace.h>
+#include <SSD1351OLED.h>
 
 //定义RAM内变量
 unsigned char ram_val;
