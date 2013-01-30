@@ -1,16 +1,18 @@
 #######################################
-# Syntax Coloring Map For Seeed OLED
+# Syntax Coloring Map For SSD1351 OLED
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-SSD1351Oled	KEYWORD1
+SSD1351OLED	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 init	KEYWORD1
+FillRGB	KEYWORD1
+OledEnable KEYWORD1
 
 #######################################
 # Constants (LITERAL1)
@@ -19,4 +21,4 @@ init	KEYWORD1
 #######################################
 # Instances (KEYWORD2)
 #######################################
-SSD1351OLED	KEYWORD1
+SSD1351Oled	KEYWORD1

@@ -15,6 +15,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <SPI.h>
+#include <Arduino.h>
 
 /* Exported types ------------------------------------------------------------*/
 typedef struct
@@ -73,12 +74,16 @@ typedef enum
 class SSD1351OLED {
 public:
 	void init(void);
+	void FillRGB(uint8_t r,uint8_t g,uint8_t b);
+	void OledEnable(uint8_t en);
 
 private:
-	
+	void WriteCommand(uint8_t cmd);
+	void WriteData(uint8_t data);
+	void SetAddress(uint8_t a,uint8_t b,uint8_t c,uint8_t d);
 };
 
-extern SSD1351OLED SSD1351Oled;  // SSD1351OLED object 
+extern SSD1351OLED SSD1351Oled;
 
 #endif /* __LIB_SSD1351OLED_H */
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/
