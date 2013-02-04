@@ -14,6 +14,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <SSD1351OLED.h>
 #include <SPI.h>
+#include "beauty.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -28,9 +29,10 @@
  */
 void setup(void)
 {
-	SSD1351Oled.init();
+	SSD1351Oled.Init();
 	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
-	SSD1351Oled.OledEnable(1);
+	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_0, (uint16_t)gImage_size, 0x00,0x7f,0x00,0x7f);
+	SSD1351Oled.Enable(1);
 }
 
 /******************************************************************************/
@@ -41,9 +43,9 @@ void setup(void)
  */
 void loop(void)
 {
-	SSD1351Oled.FillRGB(0xFF, 0x00, 0x00);
-	SSD1351Oled.FillRGB(0x00, 0xFF, 0x00);
-	SSD1351Oled.FillRGB(0x00, 0x00, 0xFF);
+	//SSD1351Oled.FillRGB(0xFF, 0x00, 0x00);
+	//SSD1351Oled.FillRGB(0x00, 0xFF, 0x00);
+	//SSD1351Oled.FillRGB(0x00, 0x00, 0xFF);
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/

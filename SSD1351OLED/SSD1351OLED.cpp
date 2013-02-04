@@ -28,11 +28,11 @@ SSD1351OLED SSD1351Oled;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /*!
- * @fn    void init(void)
+ * @fn    void Init(void)
  * @brief 初始化SPI及1351。
  * \author meegoo (2013/01/30)
  */
-void SSD1351OLED::init(void)
+void SSD1351OLED::Init(void)
 {
 	/* init GPIO */
 	pinMode(RES,OUTPUT);
@@ -238,17 +238,34 @@ void SSD1351OLED::FillRGB(uint8_t r,uint8_t g,uint8_t b)
 
 /******************************************************************************/
 /*!
- * @fn    void OledEnable(uint8_t en)
+ * @fn    void SSD1351Enable(uint8_t en)
  * @brief 使能或禁止1351显示。
  * \author meegoo (2013/01/30)
  */
-void SSD1351OLED::OledEnable(uint8_t en)
+void SSD1351OLED::Enable(uint8_t en)
 {
 	if(en){
 		WriteCommand(SSD1351_CMD_SLEEPMODE_DISPLAYON);
 	}
 	else{
 		WriteCommand(SSD1351_CMD_SLEEPMODE_DISPLAYOFF);
+	}
+}
+
+/******************************************************************************/
+/*!
+ * @fn     void DrawBitmap(uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2)
+ * @brief  显示图片在设置区域。
+ * \author meegoo (2013/01/30)
+ */
+void SSD1351OLED::DrawBitmap(uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2)
+{
+	uint16_t i;
+
+	SetAddress(x1, x2, y1, y2);
+	WriteCommand(SSD1351_CMD_WRITERAM);
+	for(i=0; i<bytes; i++){
+		WriteData(bitmaparray[i]);
 	}
 }
 

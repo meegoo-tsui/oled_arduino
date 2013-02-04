@@ -73,9 +73,10 @@ typedef enum
 /* Exported functions --------------------------------------------------------*/
 class SSD1351OLED {
 public:
-	void init(void);
+	void Init(void);
 	void FillRGB(uint8_t r,uint8_t g,uint8_t b);
-	void OledEnable(uint8_t en);
+	void Enable(uint8_t en);
+	void DrawBitmap(uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
 
 private:
 	void WriteCommand(uint8_t cmd);

@@ -10,9 +10,10 @@ SSD1351OLED	KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-init	KEYWORD1
+Init	KEYWORD1
 FillRGB	KEYWORD1
-OledEnable KEYWORD1
+Enable KEYWORD1
+DrawBitmap	KEYWORD1
 
 #######################################
 # Constants (LITERAL1)
