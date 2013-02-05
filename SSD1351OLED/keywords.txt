@@ -12,9 +12,13 @@ SSD1351OLED	KEYWORD1
 #######################################
 Init	KEYWORD1
 FillRGB	KEYWORD1
+FillRGBEx	KEYWORD1
 Enable KEYWORD1
 DrawBitmap	KEYWORD1
 Rotate	KEYWORD1
+SetTextXY	KEYWORD1
+PutChar	KEYWORD1
+PutString	KEYWORD1
 
 #######################################
 # Constants (LITERAL1)

@@ -18,12 +18,6 @@
 #include <Arduino.h>
 
 /* Exported types ------------------------------------------------------------*/
-typedef struct
-{
-  uint8_t width;                                // LCD width in pixels (default orientation)
-  uint8_t height;                               // LCD height in pixels (default orientation)
-} lcdProperties_t;
-
 typedef enum
 {
   SSD1351_CMD_SETCOLUMNADDRESS          = 0x15,
@@ -80,11 +74,16 @@ class SSD1351OLED {
 public:
 	void Init(void);
 	void FillRGB(uint8_t r,uint8_t g,uint8_t b);
+	void FillRGBEx(uint8_t r,uint8_t g,uint8_t b, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
 	void Enable(uint8_t en);
 	void DrawBitmap(const uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
 	void Rotate(uint8_t r);
+	void SetTextXY(uint8_t x, uint8_t y);
+	void PutChar(uint8_t C);
+	void PutString(const char *String);
 
 private:
+	uint8_t pos_x, pos_y;
 	void WriteCommand(uint8_t cmd);
 	void WriteData(uint8_t data);
 	void SetAddress(uint8_t a,uint8_t b,uint8_t c,uint8_t d);

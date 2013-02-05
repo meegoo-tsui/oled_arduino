@@ -13,6 +13,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "SSD1351OLED.h"
+#include "font_8x8.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -48,6 +49,7 @@ void SSD1351OLED::Init(void)
 	SPI.setDataMode(SPI_MODE3);
 
 	/* init 1351 oled */
+	SetTextXY(0, 0);
 	digitalWrite(RES,HIGH);                          /* Reset the oled module */
 	delay(100);
 	digitalWrite(RES,LOW);
@@ -238,6 +240,29 @@ void SSD1351OLED::FillRGB(uint8_t r,uint8_t g,uint8_t b)
 
 /******************************************************************************/
 /*!
+ * @fn    void FillRGBEx(uint8_t r,uint8_t g,uint8_t b)
+ * @brief 填充1351某一区域为同一颜色。
+ * \author meegoo (2013/01/30)
+ */
+void SSD1351OLED::FillRGBEx(uint8_t r,uint8_t g,uint8_t b, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2)
+{
+	uint8_t x, y, data1, data2;
+	
+    SetAddress(x1, x2, y1, y2);
+    WriteCommand(SSD1351_CMD_WRITERAM);
+	data1 = (r &  0xF8) | (g>>5);
+	data2 = (b >> 3)    | ((g>>2)<<5);
+
+    for(x=x1; x<=x2; x++) {
+		for(y=y1; y<=y2; y++) {
+			WriteData(data1);
+			WriteData(data2);
+		}
+	}
+}
+
+/******************************************************************************/
+/*!
  * @fn    void SSD1351Enable(uint8_t en)
  * @brief 使能或禁止1351显示。
  * \author meegoo (2013/01/30)
@@ -293,6 +318,57 @@ void SSD1351OLED::Rotate(uint8_t r)
 		default:
 			SSD1351Oled.WriteData(0x74);
 			break;
+	}
+}
+
+/******************************************************************************/
+/*!
+ * @fn     void SetTextXY(uint8_t x, uint8_t y)
+ * @brief  设置显示字符位置，单位8个像素点。
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::SetTextXY(uint8_t x, uint8_t y)
+{
+	pos_x = x << 3;
+	pos_y = y << 3;	
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void PutChar(uint8_t C)
+ * @brief 打印一个字符在[pos_x, pos_y]。
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::PutChar(uint8_t C)
+{
+	if(C < 32 || C > 127){
+		C=' ';
+	}	
+	DrawBitmap((uint8_t *)BasicFont[C - 32], 128, pos_x, pos_x + 7, pos_y, pos_y + 7);
+	/* 设置新坐标 */
+	pos_x = pos_x + 8;
+	if(pos_x >= 0x7F){
+		pos_x = 0;
+		pos_y = pos_y + 8;
+		if(pos_y >= 0x7F){
+			pos_y = 0;
+		}
+	}
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void PutString(const char *String)
+ * @brief 打印字符串。
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::PutString(const char *String)
+{
+	uint8_t i = 0;
+
+	while(String[i]){
+		PutChar(String[i]);     
+		i++;
 	}
 }
 

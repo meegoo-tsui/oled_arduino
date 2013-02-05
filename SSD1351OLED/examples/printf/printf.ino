@@ -1,7 +1,7 @@
 /********************** (C) COPYRIGHT 2013 meegoo tsui ************************/
 /*!
- * @file      drawbitmap.cpp
- * @brief     draw bitmap and rotate. 
+ * @file      printf.ino
+ * @brief     printf demo. 
  * @author    meegoo tsui
  * @version   1.0
  * @date      2013/01/30
@@ -14,7 +14,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include <SSD1351OLED.h>
 #include <SPI.h>
-#include "beauty_64x64.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -29,14 +28,15 @@
  */
 void setup(void)
 {
+	int i;
+
 	SSD1351Oled.Init();
 	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
 
-	/* 画边框 */
-	SSD1351Oled.FillRGBEx(0xFF, 0xFF, 0xFF, 0x00, 0x7F, 0x00, 0x07);
-	SSD1351Oled.FillRGBEx(0xFF, 0xFF, 0xFF, 0x00, 0x7F, 0x78, 0x7F);
-	SSD1351Oled.FillRGBEx(0xFF, 0xFF, 0xFF, 0x00, 0x07, 0x08, 0x7F);
-	SSD1351Oled.FillRGBEx(0xFF, 0xFF, 0xFF, 0x78, 0x7F, 0x08, 0x7F);
+	SSD1351Oled.SetTextXY(2, 2);
+	SSD1351Oled.PutString("123456");
+	SSD1351Oled.SetTextXY(2, 3);
+	SSD1351Oled.PutString("Hello, world, haaaaaaaaaaaaaaaaaaaaaaaax");
 	SSD1351Oled.Enable(1);
 }
 
@@ -48,27 +48,6 @@ void setup(void)
  */
 void loop(void)
 {
-#if 1
-	/* 逆时针0度 */
-	SSD1351Oled.Rotate(R0);
-	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);	
-	delay(1000);
-
-	/* 逆时针90度 */
-	SSD1351Oled.Rotate(R90);
-	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);	
-	delay(1000);
-
-	/* 逆时针180度 */
-	SSD1351Oled.Rotate(R180);
-	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);
-	delay(1000);
-
-	/* 逆时针270度 */
-	SSD1351Oled.Rotate(R270);
-	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);
-	delay(1000);
-#endif
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/
