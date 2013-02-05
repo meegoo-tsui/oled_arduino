@@ -271,4 +271,29 @@ void SSD1351OLED::DrawBitmap(const uint8_t *bitmaparray,uint16_t bytes, uint8_t 
 	}
 }
 
+/******************************************************************************/
+/*!
+ * @fn     void DrawBitmap(uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2)
+ * @brief  ÄæÊ±ÕëÐý×ªÆÁÄ»rx90¶È¡£
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::Rotate(uint8_t r)
+{
+	SSD1351Oled.WriteCommand(SSD1351_CMD_COLORDEPTH);
+	switch(r){
+		case R90:
+			SSD1351Oled.WriteData(0x65);
+			break;
+		case R180:
+			SSD1351Oled.WriteData(0x66);
+			break;
+		case R270:
+			SSD1351Oled.WriteData(0x77);
+			break;
+		default:
+			SSD1351Oled.WriteData(0x74);
+			break;
+	}
+}
+
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/

@@ -68,6 +68,11 @@ typedef enum
 } ssd1351Cmd_e;
 
 /* Exported constants --------------------------------------------------------*/
+#define R0       0
+#define R90      1
+#define R180     2
+#define R270     3
+
 /* Exported macro ------------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
@@ -77,6 +82,7 @@ public:
 	void FillRGB(uint8_t r,uint8_t g,uint8_t b);
 	void Enable(uint8_t en);
 	void DrawBitmap(const uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
+	void Rotate(uint8_t r);
 
 private:
 	void WriteCommand(uint8_t cmd);
