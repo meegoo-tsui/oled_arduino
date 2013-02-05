@@ -76,7 +76,7 @@ public:
 	void Init(void);
 	void FillRGB(uint8_t r,uint8_t g,uint8_t b);
 	void Enable(uint8_t en);
-	void DrawBitmap(uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
+	void DrawBitmap(const uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
 
 private:
 	void WriteCommand(uint8_t cmd);

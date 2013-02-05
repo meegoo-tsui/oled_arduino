@@ -258,14 +258,16 @@ void SSD1351OLED::Enable(uint8_t en)
  * @brief  显示图片在设置区域。
  * \author meegoo (2013/01/30)
  */
-void SSD1351OLED::DrawBitmap(uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2)
+void SSD1351OLED::DrawBitmap(const uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2)
 {
 	uint16_t i;
+	uint8_t val;
 
 	SetAddress(x1, x2, y1, y2);
 	WriteCommand(SSD1351_CMD_WRITERAM);
 	for(i=0; i<bytes; i++){
-		WriteData(bitmaparray[i]);
+		val = pgm_read_byte(&(bitmaparray[i]));
+		WriteData(val);
 	}
 }
 
