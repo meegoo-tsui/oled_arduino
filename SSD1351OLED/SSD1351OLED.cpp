@@ -50,6 +50,7 @@ void SSD1351OLED::Init(void)
 
 	/* init 1351 oled */
 	SetTextXY(0, 0);
+	SetFontColor(0xFF, 0xFF, 0xFF);
 	digitalWrite(RES,HIGH);                          /* Reset the oled module */
 	delay(100);
 	digitalWrite(RES,LOW);
@@ -341,10 +342,28 @@ void SSD1351OLED::SetTextXY(uint8_t x, uint8_t y)
  */
 void SSD1351OLED::PutChar(uint8_t C)
 {
+	uint16_t i;
+	uint8_t val;
+
 	if(C < 32 || C > 127){
 		C=' ';
 	}	
-	DrawBitmap((uint8_t *)BasicFont[C - 32], 128, pos_x, pos_x + 7, pos_y, pos_y + 7);
+
+	/* Ð´Ð´×Ö·û */
+	SetAddress(pos_x, pos_x + 7, pos_y, pos_y + 7);
+	WriteCommand(SSD1351_CMD_WRITERAM);
+	for(i=0; i<128; i++){
+		val = pgm_read_byte(&(BasicFont[C - 32][i]));
+		if(val){
+			WriteData(font_color_1);
+			WriteData(font_color_2);
+		} else{
+			WriteData(0x00);
+			WriteData(0x00);
+		}
+		i++;
+	}	
+
 	/* ÉèÖÃÐÂ×ø±ê */
 	pos_x = pos_x + 8;
 	if(pos_x >= 0x7F){
@@ -370,6 +389,18 @@ void SSD1351OLED::PutString(const char *String)
 		PutChar(String[i]);     
 		i++;
 	}
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void PutString(const char *String)
+ * @brief ´òÓ¡×Ö·û´®¡£
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::SetFontColor(uint8_t r,uint8_t g,uint8_t b)
+{
+	font_color_1 = (r &  0xF8) | (g>>5);
+	font_color_2 = (b >> 3)    | ((g>>2)<<5);
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/

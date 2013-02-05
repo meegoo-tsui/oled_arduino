@@ -19,6 +19,7 @@ Rotate	KEYWORD1
 SetTextXY	KEYWORD1
 PutChar	KEYWORD1
 PutString	KEYWORD1
+SetFontColor	KEYWORD1
 
 #######################################
 # Constants (LITERAL1)

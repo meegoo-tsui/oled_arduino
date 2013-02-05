@@ -34,9 +34,17 @@ void setup(void)
 	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
 
 	SSD1351Oled.SetTextXY(2, 2);
-	SSD1351Oled.PutString("123456");
+	SSD1351Oled.PutString("0123456789");
+	SSD1351Oled.SetFontColor(0xFF, 0x00, 0x00);
 	SSD1351Oled.SetTextXY(2, 3);
-	SSD1351Oled.PutString("Hello, world, haaaaaaaaaaaaaaaaaaaaaaaax");
+	SSD1351Oled.PutString("Hello, world");
+	SSD1351Oled.SetFontColor(0x00, 0xFF, 0x00);
+	SSD1351Oled.SetTextXY(2, 4);
+	SSD1351Oled.PutString("Hello, world");	
+	SSD1351Oled.SetFontColor(0x00, 0x00, 0xFF);
+	SSD1351Oled.SetTextXY(2, 5);
+	SSD1351Oled.PutString("Hello, world");	
+	
 	SSD1351Oled.Enable(1);
 }
 

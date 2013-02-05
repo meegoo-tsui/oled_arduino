@@ -81,9 +81,11 @@ public:
 	void SetTextXY(uint8_t x, uint8_t y);
 	void PutChar(uint8_t C);
 	void PutString(const char *String);
+	void SetFontColor(uint8_t r,uint8_t g,uint8_t b);
 
 private:
 	uint8_t pos_x, pos_y;
+	uint8_t font_color_1, font_color_2;
 	void WriteCommand(uint8_t cmd);
 	void WriteData(uint8_t data);
 	void SetAddress(uint8_t a,uint8_t b,uint8_t c,uint8_t d);
