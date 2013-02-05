@@ -64,7 +64,7 @@ void SSD1351OLED::Init(void)
 	WriteData(0xB1);                          /* Make all commands accessible */ 
 	WriteCommand(SSD1351_CMD_SLEEPMODE_DISPLAYOFF);
 	WriteCommand(SSD1351_CMD_SETFRONTCLOCKDIV);
-	WriteData(0xF1);
+	WriteData(0xD0);
 	WriteCommand(SSD1351_CMD_SETMUXRRATIO);
 	WriteData(0x7f);
 	WriteCommand(SSD1351_CMD_COLORDEPTH);
@@ -342,26 +342,29 @@ void SSD1351OLED::SetTextXY(uint8_t x, uint8_t y)
  */
 void SSD1351OLED::PutChar(uint8_t C)
 {
-	uint16_t i;
-	uint8_t val;
+	uint16_t i, j;
+	uint8_t val, b_val;
 
 	if(C < 32 || C > 127){
 		C=' ';
 	}	
 
-	/* 写写字符 */
+	/* 写字符 */
 	SetAddress(pos_x, pos_x + 7, pos_y, pos_y + 7);
 	WriteCommand(SSD1351_CMD_WRITERAM);
-	for(i=0; i<128; i++){
+	for(i=0; i<8; i++){
 		val = pgm_read_byte(&(BasicFont[C - 32][i]));
-		if(val){
-			WriteData(font_color_1);
-			WriteData(font_color_2);
-		} else{
-			WriteData(0x00);
-			WriteData(0x00);
+		/* 每个bit位一个点的颜色 */
+		for(j=0; j<8; j++){
+			b_val = val & (0x80 >> j);
+			if(b_val){
+				WriteData(font_color_1);
+				WriteData(font_color_2);
+			} else{
+				WriteData(0x00);
+				WriteData(0x00);
+			}
 		}
-		i++;
 	}	
 
 	/* 设置新坐标 */

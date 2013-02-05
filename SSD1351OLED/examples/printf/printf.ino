@@ -14,6 +14,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <SSD1351OLED.h>
 #include <SPI.h>
+#include <stdarg.h>
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -22,14 +23,28 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /*!
+ * @fn    p(char *fmt, ... )
+ * @brief 串口打印。
+ * \author meegoo (2013/01/30)
+ */
+void p(char *fmt, ...)
+{ 
+	char tmp[128];                   /* resulting string limited to 128 chars */
+	va_list args;
+	va_start (args, fmt );
+	vsnprintf(tmp, 128, fmt, args);
+	va_end (args);
+	Serial.print(tmp);
+}
+
+/******************************************************************************/
+/*!
  * @fn    void setup(void)
  * @brief 系统初始化。
  * \author meegoo (2013/01/30)
  */
 void setup(void)
 {
-	int i;
-
 	SSD1351Oled.Init();
 	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
 
@@ -44,8 +59,13 @@ void setup(void)
 	SSD1351Oled.SetFontColor(0x00, 0x00, 0xFF);
 	SSD1351Oled.SetTextXY(2, 5);
 	SSD1351Oled.PutString("Hello, world");	
-	
+
 	SSD1351Oled.Enable(1);
+	
+	/* init uart */
+	Serial.begin(57600);
+	while (!Serial);
+	p("Ready ....\r\n");
 }
 
 /******************************************************************************/

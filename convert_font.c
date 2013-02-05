@@ -109,16 +109,22 @@ void main(void)
 
 	printf("#include <avr/pgmspace.h>\n\n");
 	printf("uint16_t BasicFont_size = %d;\n", font_total);
-	printf("const unsigned char BasicFont[][128] PROGMEM = {");
+	printf("const unsigned char BasicFont[][8] PROGMEM = {");
 	for(i=0; i< font_total; i++){ /* 字符 */
 		printf("\n  {");
 		for(j=0; j<8; j++){ /* 位 */
+			val = 0x00;
 			for(k=0; k < 8; k++){ /* 字节 */
-				val = BasicFont[i][k] & (1 << j); /* 读取第i个字符的第j个字节的k位 */
-				if(val){
-					printf("0xFF,0xFF"); /* 白色 */
-				} else{
-					printf("0x00,0x00");
+				val = val << 1;
+				if(BasicFont[i][k] & (1 << j)){ /* 读取第i个字符的第j个字节的k位 */
+					val = val | 0x01;
+				}
+				if(k == 7){
+					if(j == 7){
+						printf("0x%02x", val);
+					} else{
+						printf("0x%02x,", val);
+					}
 				}
 				if(j ==7 && k == 7){
 					if(i == font_total - 1)
@@ -126,8 +132,6 @@ void main(void)
 					else
 						printf("},");
 				}
-				else
-					printf(",");
 			}
 		}
 	}
