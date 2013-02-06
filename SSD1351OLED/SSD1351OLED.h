@@ -62,10 +62,14 @@ typedef enum
 } ssd1351Cmd_e;
 
 /* Exported constants --------------------------------------------------------*/
-#define R0       0
-#define R90      1
-#define R180     2
-#define R270     3
+#define R0                                0
+#define R90                               1
+#define R180                              2
+#define R270                              3
+#define MAX_COLUMN	                      0x7f
+#define MAX_ROW		                      0x7f
+#define	MAX_BRIGHTNESS	                  0x0F
+#define FADE_DELAY                        0x40
 
 /* Exported macro ------------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
@@ -82,6 +86,11 @@ public:
 	void PutChar(uint8_t C);
 	void PutString(const char *String);
 	void SetFontColor(uint8_t r,uint8_t g,uint8_t b);
+	void HorizontalScroll(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint8_t e);
+	void StopMoving(void);
+	void StartMoving(void);
+	void FadeIn(void);
+	void FadeOut(void);
 
 private:
 	uint8_t rotate;

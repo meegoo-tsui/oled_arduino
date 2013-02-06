@@ -31,13 +31,6 @@ void setup(void)
 {
 	SSD1351Oled.Init();
 	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
-
-	/* 画边框 */
-	SSD1351Oled.FillRGBEx(0xFF, 0xFF, 0xFF, 0x00, 0x7F, 0x00, 0x07);
-	SSD1351Oled.FillRGBEx(0xFF, 0xFF, 0xFF, 0x00, 0x7F, 0x78, 0x7F);
-	SSD1351Oled.FillRGBEx(0xFF, 0xFF, 0xFF, 0x00, 0x07, 0x08, 0x7F);
-	SSD1351Oled.FillRGBEx(0xFF, 0xFF, 0xFF, 0x78, 0x7F, 0x08, 0x7F);
-	SSD1351Oled.Enable(1);
 }
 
 /******************************************************************************/
@@ -54,7 +47,9 @@ void loop(void)
 		for(i=0; i<4; i++){
 			SSD1351Oled.Rotate(i);
 			SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);
-			delay(3000);
+			SSD1351Oled.FadeIn();
+			delay(2000);
+			SSD1351Oled.FadeOut();
 		}
 	}
 }

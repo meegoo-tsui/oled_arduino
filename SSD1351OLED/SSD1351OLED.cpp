@@ -410,4 +410,99 @@ void SSD1351OLED::SetFontColor(uint8_t r,uint8_t g,uint8_t b)
 	font_color_2 = (b >> 3)    | ((g>>2)<<5);
 }
 
+/******************************************************************************/
+/*!
+ * @fn    void HorizontalScroll(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint8_t e)
+ * @brief 水平移动。
+ * \author meegoo (2013/02/05)
+ */
+/*
+ * OLED horizontal scroll
+ *  a: 0x00     ..no scrolling
+ *     0x01-0x3f..scroll towards SEG127 with 1 column offset
+ *     0x40-0xff..scroll towards SEG0   with 1 column offset
+ *  b: 0x00-0x7f..start row address
+ *  c: 0x00-0xff..number of rows to be h-scrolled  (b + c <= 0x80)
+ *  d: reserved (0x00 by reset)
+ *  e: scrolling time interval
+ *      0x00..test mode
+ *      0x01..normal
+ *      0x02..slow
+ *      0x03..slowest
+ */
+void SSD1351OLED::HorizontalScroll(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint8_t e)
+{
+	if(rotate & 0x01){ /* 不支持90度水平移动 */
+		return;
+	}
+    WriteCommand(SSD1351_CMD_HORIZONTALSCROLL);
+    WriteData(a);
+    WriteData(b);
+    WriteData(c);
+    WriteData(d);
+    WriteData(e);
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void StopMoving(void)
+ * @brief 停止水平移动。
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::StopMoving(void)
+{
+    WriteCommand(SSD1351_CMD_STOPMOVING);
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void StartMoving(void)
+ * @brief 开始水平移动。
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::StartMoving(void)
+{
+	if(rotate & 0x01){ /* 不支持90度水平移动 */
+		StopMoving();
+		return;
+	}
+    WriteCommand(SSD1351_CMD_STARTMOVING);
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void FadeIn(void)
+ * @brief Fade in (Full Screen)。
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::FadeIn(void)
+{
+	uint8_t i;
+
+	Enable(0x01);
+	for(i=0; i<(MAX_BRIGHTNESS + 1); i++){
+		WriteCommand(SSD1351_CMD_MASTERCONTRAST);
+		WriteData(i);
+		delay(FADE_DELAY);
+	}
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void FadeOut(void)
+ * @brief Fade out (Full Screen)。
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::FadeOut(void)
+{
+	uint8_t i;
+
+	for(i=0; i<(MAX_BRIGHTNESS + 1); i++){
+		WriteCommand(SSD1351_CMD_MASTERCONTRAST);
+		WriteData(MAX_BRIGHTNESS - i);
+		delay(FADE_DELAY);
+	}
+	Enable(0x00);
+}
+
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/

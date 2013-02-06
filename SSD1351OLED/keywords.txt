@@ -20,6 +20,11 @@ SetTextXY	KEYWORD1
 PutChar	KEYWORD1
 PutString	KEYWORD1
 SetFontColor	KEYWORD1
+HorizontalScroll	KEYWORD1
+StopMoving	KEYWORD1
+StartMoving	KEYWORD1
+FadeIn	KEYWORD1
+FadeOut	KEYWORD1
 
 #######################################
 # Constants (LITERAL1)
