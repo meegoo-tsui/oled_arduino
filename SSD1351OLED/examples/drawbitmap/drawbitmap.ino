@@ -48,27 +48,15 @@ void setup(void)
  */
 void loop(void)
 {
-#if 1
-	/* 逆时针0度 */
-	SSD1351Oled.Rotate(R0);
-	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);	
-	delay(1000);
+	uint8_t i;
 
-	/* 逆时针90度 */
-	SSD1351Oled.Rotate(R90);
-	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);	
-	delay(1000);
-
-	/* 逆时针180度 */
-	SSD1351Oled.Rotate(R180);
-	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);
-	delay(1000);
-
-	/* 逆时针270度 */
-	SSD1351Oled.Rotate(R270);
-	SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);
-	delay(1000);
-#endif
+	while(1){	
+		for(i=0; i<4; i++){
+			SSD1351Oled.Rotate(i);
+			SSD1351Oled.DrawBitmap((uint8_t *)gImage_beauty_64x64, gImage_beauty_64x64_size, 0x20,0x5f,0x20,0x5f);
+			delay(3000);
+		}
+	}
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/

@@ -25,6 +25,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 SSD1351OLED SSD1351Oled;
+uint8_t     RotateSet[4] = {0x66, 0x65, 0x74, 0x77};
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -57,7 +58,6 @@ void SSD1351OLED::Init(void)
 	delay(100);
 	digitalWrite(RES,HIGH);
 	delay(100);
-
 	WriteCommand(SSD1351_CMD_SETCOMMANDLOCK);
 	WriteData(0x12);                            /* Unlocked to enter commands */
 	WriteCommand(SSD1351_CMD_SETCOMMANDLOCK);
@@ -68,7 +68,7 @@ void SSD1351OLED::Init(void)
 	WriteCommand(SSD1351_CMD_SETMUXRRATIO);
 	WriteData(0x7f);
 	WriteCommand(SSD1351_CMD_COLORDEPTH);
-	WriteData(0x74);           /* Bit 7:6 = 65,536 Colors, Bit 3 = BGR or RGB */
+	WriteData(RotateSet[0]);   /* Bit 7:6 = 65,536 Colors, Bit 3 = BGR or RGB */
 	WriteCommand(SSD1351_CMD_SETCOLUMNADDRESS);
 	WriteData(0x00);
 	WriteData(0x7F);
@@ -300,26 +300,14 @@ void SSD1351OLED::DrawBitmap(const uint8_t *bitmaparray,uint16_t bytes, uint8_t 
 /******************************************************************************/
 /*!
  * @fn     void DrawBitmap(uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2)
- * @brief  逆时针旋转屏幕rx90度。
+ * @brief  顺时针旋转屏幕rx90度。
  * \author meegoo (2013/02/05)
  */
 void SSD1351OLED::Rotate(uint8_t r)
 {
-	SSD1351Oled.WriteCommand(SSD1351_CMD_COLORDEPTH);
-	switch(r){
-		case R90:
-			SSD1351Oled.WriteData(0x65);
-			break;
-		case R180:
-			SSD1351Oled.WriteData(0x66);
-			break;
-		case R270:
-			SSD1351Oled.WriteData(0x77);
-			break;
-		default:
-			SSD1351Oled.WriteData(0x74);
-			break;
-	}
+	rotate = r%4;
+	WriteCommand(SSD1351_CMD_COLORDEPTH);
+	WriteData(RotateSet[rotate]);
 }
 
 /******************************************************************************/
@@ -330,8 +318,13 @@ void SSD1351OLED::Rotate(uint8_t r)
  */
 void SSD1351OLED::SetTextXY(uint8_t x, uint8_t y)
 {
-	pos_x = x << 3;
-	pos_y = y << 3;	
+	if(rotate & 0x01){
+		pos_x = y << 3;
+		pos_y = x << 3;		
+	} else{
+		pos_x = x << 3;
+		pos_y = y << 3;
+	}
 }
 
 /******************************************************************************/
@@ -368,12 +361,23 @@ void SSD1351OLED::PutChar(uint8_t C)
 	}	
 
 	/* 设置新坐标 */
-	pos_x = pos_x + 8;
-	if(pos_x >= 0x7F){
-		pos_x = 0;
+	if(rotate & 0x01){
 		pos_y = pos_y + 8;
 		if(pos_y >= 0x7F){
 			pos_y = 0;
+			pos_x = pos_x + 8;
+			if(pos_x >= 0x7F){
+				pos_x = 0;
+			}
+		}
+	} else{
+		pos_x = pos_x + 8;
+		if(pos_x >= 0x7F){
+			pos_x = 0;
+			pos_y = pos_y + 8;
+			if(pos_y >= 0x7F){
+				pos_y = 0;
+			}
 		}
 	}
 }

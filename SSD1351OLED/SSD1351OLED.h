@@ -84,6 +84,7 @@ public:
 	void SetFontColor(uint8_t r,uint8_t g,uint8_t b);
 
 private:
+	uint8_t rotate;
 	uint8_t pos_x, pos_y;
 	uint8_t font_color_1, font_color_2;
 	void WriteCommand(uint8_t cmd);

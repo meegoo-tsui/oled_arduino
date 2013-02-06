@@ -27,6 +27,7 @@
  * @brief 串口打印。
  * \author meegoo (2013/01/30)
  */
+#if 0
 void p(char *fmt, ...)
 { 
 	char tmp[128];                   /* resulting string limited to 128 chars */
@@ -36,6 +37,7 @@ void p(char *fmt, ...)
 	va_end (args);
 	Serial.print(tmp);
 }
+#endif
 
 /******************************************************************************/
 /*!
@@ -45,27 +47,17 @@ void p(char *fmt, ...)
  */
 void setup(void)
 {
+	/* 初始化oled */
 	SSD1351Oled.Init();
 	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
-
-	SSD1351Oled.SetTextXY(2, 2);
-	SSD1351Oled.PutString("0123456789");
-	SSD1351Oled.SetFontColor(0xFF, 0x00, 0x00);
-	SSD1351Oled.SetTextXY(2, 3);
-	SSD1351Oled.PutString("Hello, world");
-	SSD1351Oled.SetFontColor(0x00, 0xFF, 0x00);
-	SSD1351Oled.SetTextXY(2, 4);
-	SSD1351Oled.PutString("Hello, world");	
-	SSD1351Oled.SetFontColor(0x00, 0x00, 0xFF);
-	SSD1351Oled.SetTextXY(2, 5);
-	SSD1351Oled.PutString("Hello, world");	
-
 	SSD1351Oled.Enable(1);
-	
+
+#if 0
 	/* init uart */
 	Serial.begin(57600);
 	while (!Serial);
 	p("Ready ....\r\n");
+#endif
 }
 
 /******************************************************************************/
@@ -76,6 +68,32 @@ void setup(void)
  */
 void loop(void)
 {
+	uint8_t i;
+
+	while(1){	
+		for(i=0; i<4; i++){ /* 打印测试 */
+			SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
+			SSD1351Oled.Rotate(i);
+			
+			SSD1351Oled.SetFontColor(0xFF, 0xFF, 0xFF);
+			SSD1351Oled.SetTextXY(2, 2);
+			SSD1351Oled.PutString("0123456789");
+			
+			SSD1351Oled.SetFontColor(0xFF, 0x00, 0x00);
+			SSD1351Oled.SetTextXY(2, 3);
+			SSD1351Oled.PutString("Hello, world");
+			
+			SSD1351Oled.SetFontColor(0x00, 0xFF, 0x00);
+			SSD1351Oled.SetTextXY(2, 4);
+			SSD1351Oled.PutString("Hello, world");
+				
+			SSD1351Oled.SetFontColor(0x00, 0x00, 0xFF);
+			SSD1351Oled.SetTextXY(2, 5);
+			SSD1351Oled.PutString("Hello, world");
+
+			delay(3000);
+		}
+	}
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/
