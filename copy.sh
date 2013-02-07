@@ -6,7 +6,9 @@
 #+   meegoo.tsui@gmail.com, 2013-01-29
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 LOCAL_LIB_PATH=SSD1351OLED
-ARDUINO_LIB_PATH=$HOME/Documents/Arduino/libraries
+if [ "$OS" == "Windows_NT" ]; then
+	ARDUINO_LIB_PATH=$HOME/Documents/Arduino/libraries
+fi
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 if [ ! -d "$ARDUINO_LIB_PATH" ]; then
