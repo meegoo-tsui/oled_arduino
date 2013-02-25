@@ -77,6 +77,7 @@ typedef enum
 class SSD1351OLED {
 public:
 	void Init(void);
+	void SetDot(uint8_t x,uint8_t y);
 	void FillRGB(uint8_t r,uint8_t g,uint8_t b);
 	void FillRGBEx(uint8_t r,uint8_t g,uint8_t b, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
 	void Enable(uint8_t en);
@@ -91,6 +92,7 @@ public:
 	void StartMoving(void);
 	void FadeIn(void);
 	void FadeOut(void);
+	void DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 private:
 	uint8_t rotate;

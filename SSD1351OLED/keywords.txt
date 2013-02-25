@@ -11,6 +11,7 @@ SSD1351OLED	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 Init	KEYWORD1
+SetDot	SetDot
 FillRGB	KEYWORD1
 FillRGBEx	KEYWORD1
 Enable KEYWORD1
@@ -25,6 +26,7 @@ StopMoving	KEYWORD1
 StartMoving	KEYWORD1
 FadeIn	KEYWORD1
 FadeOut	KEYWORD1
+DrawLine	KEYWORD1
 
 #######################################
 # Constants (LITERAL1)

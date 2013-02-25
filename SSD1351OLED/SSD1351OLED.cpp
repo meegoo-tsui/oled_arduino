@@ -23,6 +23,16 @@
 #define PW                   A1
 
 /* Private macro -------------------------------------------------------------*/
+#define _SSD1351OLED_absDiff(x,y) ((x>y) ?  (x-y) : (y-x))
+#define _SSD1351OLED_swap(a,b) \
+do\
+{\
+uint8_t t;\
+	t=a;\
+	a=b;\
+	b=t;\
+} while(0)
+
 /* Private variables ---------------------------------------------------------*/
 SSD1351OLED SSD1351Oled;
 uint8_t     RotateSet[4] = {0x66, 0x65, 0x74, 0x77};
@@ -214,6 +224,19 @@ void SSD1351OLED::SetAddress(uint8_t a,uint8_t b,uint8_t c,uint8_t d)
 	WriteCommand(SSD1351_CMD_SETROWADDRESS);            /* set row address    */
 	WriteData(c);                                       /* start address      */
 	WriteData(d);                                       /* end address        */
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void SetDot(uint8_t x,uint8_t y)
+ * @brief »­µã¡£
+ * \author meegoo (2013/01/30)
+ */void SSD1351OLED::SetDot(uint8_t x,uint8_t y)
+{
+    SetAddress(x,x,y,y);
+    WriteCommand(SSD1351_CMD_WRITERAM);
+	WriteData(font_color_1);
+	WriteData(font_color_2);
 }
 
 /******************************************************************************/
@@ -503,6 +526,52 @@ void SSD1351OLED::FadeOut(void)
 		delay(FADE_DELAY);
 	}
 	Enable(0x00);
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
+ * @brief Fade out (Full Screen)¡£
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
+{
+	uint8_t deltax, deltay, x,y, steep;
+	int8_t error, ystep;
+
+	steep = _SSD1351OLED_absDiff(y1,y2) > _SSD1351OLED_absDiff(x1,x2);  
+	if (steep){
+		_SSD1351OLED_swap(x1, y1);
+		_SSD1351OLED_swap(x2, y2);
+	}
+	if (x1 > x2){
+		_SSD1351OLED_swap(x1, x2);
+		_SSD1351OLED_swap(y1, y2);
+	}
+
+	deltax = x2 - x1;
+	deltay =_SSD1351OLED_absDiff(y2,y1);  
+	error = deltax / 2;
+	y = y1;
+	if(y1 < y2){
+		ystep = 1;
+	}
+	else {
+		ystep = -1;
+	}
+
+	for(x = x1; x <= x2; x++) {
+		if (steep) 
+			SetDot(y,x); 
+		else 
+			SetDot(x,y);
+   		error = error - deltay;
+		if (error < 0)
+		{
+			y = y + ystep;
+			error = error + deltax;
+    	}
+	}
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/
