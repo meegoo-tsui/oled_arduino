@@ -52,6 +52,10 @@ void setup(void)
 	SSD1351Oled.DrawCircle(64, 64, 20);
 
 	SSD1351Oled.FadeIn();
+	delay(3000);
+	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
+
+	SSD1351Oled.AnalogClockInit(SSD1351Oled.CenterX,SSD1351Oled.CenterY,SSD1351Oled.CenterY-4);
 }
 
 /******************************************************************************/

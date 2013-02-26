@@ -71,6 +71,9 @@ typedef enum
 #define	MAX_BRIGHTNESS	                  0x0F
 #define FADE_DELAY                        0x40
 
+#define DISPLAY_WIDTH                     128
+#define DISPLAY_HEIGHT                    128
+
 /* Exported macro ------------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
@@ -84,6 +87,7 @@ public:
 	void DrawBitmap(const uint8_t *bitmaparray,uint16_t bytes, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
 	void Rotate(uint8_t r);
 	void SetTextXY(uint8_t x, uint8_t y);
+	void GotoXY(uint8_t x, uint8_t y);
 	void PutChar(uint8_t C);
 	void PutString(const char *String);
 	void SetFontColor(uint8_t r,uint8_t g,uint8_t b);
@@ -100,10 +104,54 @@ public:
 	void DrawCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius);
 	void FillCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius);
 
+	void AnalogClockInit(byte x, byte y, byte r); //  x & y are the coordinates of the center of the clock, r is the radius of the clock face
+	void DisplayTime( byte hours, byte minutes, byte seconds = -1 ); // draw hands in the position for the given hours and minutes 
+	void PrintNumber(long n);
+
+		//Device Properties - these are read only constants	 
+	static const uint8_t Width = DISPLAY_WIDTH; 	/**< Display width in pixels */
+	static const uint8_t Height = DISPLAY_HEIGHT;	/**< Display height in pixels */
+	static const uint8_t Right = DISPLAY_WIDTH-1;	/**< Right most pixel on Display (equals Width -1)*/
+	static const uint8_t Bottom = DISPLAY_HEIGHT-1; /**< Bottom most pixel on Display (equals Height -1)*/
+	static const uint8_t CenterX = DISPLAY_WIDTH/2;	/**< Horizontal center pixel on Display (equals Width/2)*/
+	static const uint8_t CenterY = DISPLAY_HEIGHT/2;/**< Vertical center pixel on Display (equals Height/2)*/
 private:
 	uint8_t rotate;
 	uint8_t pos_x, pos_y;
 	uint8_t font_color_1, font_color_2;
+
+	/* Sizes and positions of clock */
+	byte x_centre      ; /* x-coordinate of clock centre                  */
+	byte y_centre      ; /* y-coordinate of clock centre                  */
+	byte radius        ; /* radius of clock face                          */
+	byte radius_aspect ; /* radius of clock face adjuted for aspect ratio */
+	byte l_hour        ; /* length of hour hand                           */
+	byte l_minute      ; /* length of minute hand                         */
+	byte l_second      ; /* length of second hand                         */
+
+	/* Previous positions of hour and minute hands */
+	byte PX_Hour   ; /* previous x-coordinate of hour hand   */
+	byte PY_Hour   ; /* previous y-coordinate of hour hand   */
+	byte PX_Minute ; /* previous x-coordinate of minute hand */
+	byte PY_Minute ; /* previous y-coordinate of minute hand */
+	byte PX_Second ; /* previous x-coordinate of second hand */
+	byte PY_Second ; /* previous y-coordinate of second hand */
+
+	/* Positions of digital clock and date, and time offset */
+	byte DigRow     ; /* row position of digital clock    */
+	byte DigColumn  ; /* column position of digital clock */
+	byte Offset     ; /* time offset from system clock    */
+	byte Hours      ; /* current hours                    */
+	byte Minutes    ; /* current minutes                  */
+	byte Seconds    ; /* current seconds                  */ 
+	byte DateRow    ; /* row position of date string      */
+	byte DateColumn ; /* column position of date string   */
+
+	void CalcHands( byte angle, byte radius, byte *x, byte *y );
+	void DrawFace();
+	void Box( byte x, byte y );
+	void SegBox( byte FaceAngle );
+
 	void WriteCommand(uint8_t cmd);
 	void WriteData(uint8_t data);
 	void SetAddress(uint8_t a,uint8_t b,uint8_t c,uint8_t d);

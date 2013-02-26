@@ -352,6 +352,23 @@ void SSD1351OLED::SetTextXY(uint8_t x, uint8_t y)
 
 /******************************************************************************/
 /*!
+ * @fn     void GotoXY(uint8_t x, uint8_t y)
+ * @brief  设置显示字符位置，单位1个像素点。
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::GotoXY(uint8_t x, uint8_t y)
+{
+	if(rotate & 0x01){
+		pos_x = y;
+		pos_y = x;		
+	} else{
+		pos_x = x;
+		pos_y = y;
+	}
+}
+
+/******************************************************************************/
+/*!
  * @fn    void PutChar(uint8_t C)
  * @brief 打印一个字符在[pos_x, pos_y]。
  * \author meegoo (2013/02/05)
@@ -706,6 +723,158 @@ void SSD1351OLED::FillCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius)
 		DrawLine(xCenter+y, yCenter+x, y+xCenter, yCenter-x);
 		DrawLine(xCenter-y, yCenter+x, xCenter-y, yCenter-x);
   	}
+}
+
+/* Look-up sine table for integer math */
+byte byteSine[16] = {0,  27,  54,  79, 104, 128, 150, 171, 190, 201, 221, 233, 243, 250, 254, 255} ;
+
+void SSD1351OLED::AnalogClockInit(byte x, byte y, byte r)
+{
+	/* calculate sizes and position of clock */
+	x_centre = x ;
+	y_centre = y ;
+	radius = r ;
+	l_hour =  r / 2 ; // hour hand is half radius
+	l_minute = (r*3) / 4 ;  // minute hand is 3/4 radius
+	l_second  = l_minute + 1;  // second hand is 2 pixels larger than minute
+
+	/* Initialise previous positions of hour and minute hand */
+	PX_Hour = PX_Minute = PX_Second = x_centre ;
+	PY_Hour = PY_Minute = PY_Second = y_centre ;
+	DrawCircle(x,y, r + 3); // draw the surrounding circle
+	DrawFace() ; /* draw the clock dial       */
+}
+
+void SSD1351OLED::DisplayTime( byte hours, byte minutes, byte seconds )
+/* draw the hands at the specified positions */
+{
+	byte angle ;
+
+	if( hours == 0 )
+           hours = 12 ;
+
+	/* erase previous hands */
+	DrawLine( x_centre, y_centre, PX_Hour, PY_Hour) ;
+	DrawLine( x_centre, y_centre, PX_Minute, PY_Minute) ;
+	DrawCircle(PX_Second, PY_Second,1);
+
+	/* calculate new position of minute hand and draw it */
+	angle = minutes ;
+	CalcHands( angle, l_minute, &PX_Minute, &PY_Minute) ;
+	DrawLine( x_centre, y_centre, PX_Minute, PY_Minute) ;
+
+	/* calculate new position of hour hand and draw it */
+	angle = ( ( 5*hours ) + ( minutes/12 ) ) % 60 ;
+	CalcHands( angle, l_hour, &PX_Hour, &PY_Hour) ;
+	DrawLine( x_centre, y_centre, PX_Hour, PY_Hour);
+
+	/* calculate new position of second hand and draw if requested */
+	if( seconds != -1) {
+		CalcHands( seconds, l_second, &PX_Second, &PY_Second ) ;
+		DrawCircle(PX_Second, PY_Second,1);
+	}
+        
+	/* re-draw clock centre */
+	Box( x_centre, y_centre) ;
+}
+
+void SSD1351OLED::CalcHands( byte angle, byte radius, byte *x, byte *y )
+/* angle is location of hand on dial (0-60)          */
+/* radius is length of hand                           */
+/* *x   return x-coordinate of hand on dial face */
+/* *y   return y-coordinate of hand on dial face */
+{
+	short quadrant, x_flip, y_flip ;
+
+	/* calculate which quadrant the hand lies in */
+	quadrant = angle/15 ;
+
+	/* setup for reflection or rotation */
+	switch ( quadrant ) {
+	  case 0 : x_flip = 1 ; y_flip = -1 ; break ;
+	  case 1 : angle = abs(angle-30) ; x_flip = y_flip = 1 ; break ;
+	  case 2 : angle = angle-30 ; x_flip = -1 ; y_flip = 1 ; break ;
+	  case 3 : angle = abs(angle-60) ; x_flip = y_flip = -1 ; break ; 
+	  default:  x_flip = y_flip =1; // this should not happen
+	}
+	*x = x_centre ;
+	*y = y_centre ;
+	*x += ( x_flip*(( byteSine[angle]*radius ) >> 8 )) ;
+	*y += ( y_flip*(( byteSine[15-angle]*radius ) >> 8 )) ;
+}
+
+void SSD1351OLED::DrawFace()
+/* draw clock face */
+{
+	byte hr, x, y ;
+
+	this->Box( x_centre, y_centre ) ; // draw center box
+
+	/* draw hour marks or numerals around the clock face */
+	for( hr = 0; hr < 60; hr += 5 ) {
+	  if ( !( hr % 15 ) )
+		 this->SegBox( hr ) ; /* draw quarter hour shapes */
+	  else{
+		 this->CalcHands( hr, radius, &x, &y ) ;
+	     this->Box( x, y ) ;
+	  }
+	}
+}
+void SSD1351OLED::Box( byte x, byte y  )
+/* draw a 3 x 3 pixel box centered at x,y */
+{
+	DrawLine( x-1, y-1, x+1, y-1) ;
+	DrawLine( x-1, y,   x+1, y) ;
+	DrawLine( x-1, y+1, x+1, y+1) ;	
+}
+
+void SSD1351OLED::SegBox( byte FaceAngle )
+/* draw quarter hour dial markers */
+/* FaceAngle is position of marker around face (0-55) */
+{
+	byte quadrant;
+	byte hour; 
+
+	/* find the nearest quadrant to the marker position */
+	quadrant = ( ( FaceAngle + 7 ) / 15 ) ;
+	hour =  FaceAngle == 0 ? 12 : FaceAngle  / 5;
+
+	switch( quadrant ) {
+		case 0 :
+		case 4 :  // 12 oclock
+			GotoXY(x_centre-6,  y_centre - radius -1 );		       
+			break;
+		case 1 : // 3 oclock
+			GotoXY(x_centre + radius - 3,  y_centre -3 );
+			break;
+		case 2 : // 6 oclock
+			GotoXY(x_centre-2,  y_centre + radius -5);
+			break;
+		case 3 : // 9 oclock
+			GotoXY(x_centre- radius ,  y_centre -3 );
+			break;
+	}
+	PrintNumber(hour);
+}
+
+void SSD1351OLED::PrintNumber(long n)
+{
+	uint8_t buf[10];  // prints up to 10 digits  
+	uint8_t i=0;
+	if(n==0)
+		PutChar('0');
+	else{
+		if(n < 0){
+			PutChar('-');
+			n = -n;
+		}
+		while(n>0 && i <= 10){
+			buf[i++] = n % 10;  // n % base
+			n /= 10;   // n/= base
+		}
+		for(; i >0; i--)
+			PutChar((char) (buf[i-1] < 10 ? '0' + buf[i-1] : 'A' + buf[i-1] - 10));	  
+	}
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/
