@@ -27,6 +27,12 @@ StartMoving	KEYWORD1
 FadeIn	KEYWORD1
 FadeOut	KEYWORD1
 DrawLine	KEYWORD1
+SetPixels	KEYWORD1
+DrawVLine	KEYWORD1
+DrawHLine	KEYWORD1
+DrawRoundRect	KEYWORD1
+DrawCircle	KEYWORD1
+FillCircle	KEYWORD1
 
 #######################################
 # Constants (LITERAL1)

@@ -93,6 +93,12 @@ public:
 	void FadeIn(void);
 	void FadeOut(void);
 	void DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+	void SetPixels(uint8_t x1, uint8_t y1,uint8_t x2, uint8_t y2);
+	void DrawVLine(uint8_t x, uint8_t y, uint8_t height);
+	void DrawHLine(uint8_t x, uint8_t y, uint8_t width);
+	void DrawRoundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius);
+	void DrawCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius);
+	void FillCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius);
 
 private:
 	uint8_t rotate;

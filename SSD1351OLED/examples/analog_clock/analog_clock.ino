@@ -33,11 +33,24 @@ void setup(void)
 	SSD1351Oled.Init();
 	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
 	SSD1351Oled.Rotate(0);
+
+	/* 对角线 */
 	SSD1351Oled.SetFontColor(0xFF, 0xFF, 0xFF);
 	SSD1351Oled.DrawLine(0x00,0x00, 0x7F,0x7F);
+	/* 对角线 */
+	SSD1351Oled.SetFontColor(0xFF, 0x00, 0x00);
 	SSD1351Oled.DrawLine(0x00,0x7F, 0x7F,0x00);
-	SSD1351Oled.DrawLine(0x00,0x40, 0x7F,0x40);
-	SSD1351Oled.DrawLine(0x40,0x00, 0x40,0x7F);
+	/* 垂直线 */
+	SSD1351Oled.SetFontColor(0x00, 0xFF, 0x00);
+	SSD1351Oled.DrawVLine(0x40,0x00, 0x7F);
+	/* 水平线 */
+	SSD1351Oled.SetFontColor(0x00, 0x00, 0xFF);
+	SSD1351Oled.DrawHLine(0x00,0x40, 0x7F);
+	/* 实心圆 */
+	SSD1351Oled.FillCircle(64, 64, 10);
+	/* 空心圆 */
+	SSD1351Oled.DrawCircle(64, 64, 20);
+
 	SSD1351Oled.FadeIn();
 }
 

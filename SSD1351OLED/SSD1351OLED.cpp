@@ -531,7 +531,7 @@ void SSD1351OLED::FadeOut(void)
 /******************************************************************************/
 /*!
  * @fn    void DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
- * @brief Fade out (Full Screen)。
+ * @brief Draw line.
  * \author meegoo (2013/02/05)
  */
 void SSD1351OLED::DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
@@ -572,6 +572,140 @@ void SSD1351OLED::DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 			error = error + deltax;
     	}
 	}
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void SetPixels(uint8_t x1, uint8_t y1,uint8_t x2, uint8_t y2)
+ * @brief 填充1351某一区域为同一颜色。
+ * \author meegoo (2013/01/30)
+ */
+void SSD1351OLED::SetPixels(uint8_t x1, uint8_t y1,uint8_t x2, uint8_t y2)
+{
+	uint8_t x, y, data1, data2;
+	
+    SetAddress(x1, x2, y1, y2);
+    WriteCommand(SSD1351_CMD_WRITERAM);
+    for(x=x1; x<=x2; x++) {
+		for(y=y1; y<=y2; y++) {
+			WriteData(font_color_1);
+			WriteData(font_color_2);
+		}
+	}
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void DrawVLine(uint8_t x, uint8_t y, uint8_t height)
+ * @brief Draw a Vertical Line.
+ * \author meegoo (2013/01/30)
+ */
+void SSD1351OLED::DrawVLine(uint8_t x, uint8_t y, uint8_t height)
+{
+	SetPixels(x,y,x,y+height);
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void DrawHLine(uint8_t x, uint8_t y, uint8_t width)
+ * @brief Draw a Horizontal Line.
+ * \author meegoo (2013/01/30)
+ */
+void SSD1351OLED::DrawHLine(uint8_t x, uint8_t y, uint8_t width)
+{
+	SetPixels(x,y, x+width, y);
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void DrawRoundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius)
+ * @brief Draw a rectangle with rounder corners.
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::DrawRoundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius) 
+{
+  	int16_t tSwitch; 
+	uint8_t x1 = 0, y1 = radius;
+  	tSwitch = 3 - 2 * radius;
+	
+	while (x1 <= y1) {
+	    SetDot(x+radius - x1, y+radius - y1);
+	    SetDot(x+radius - y1, y+radius - x1);
+
+	    SetDot(x+width-radius + x1, y+radius - y1);
+	    SetDot(x+width-radius + y1, y+radius - x1);
+	    
+	    SetDot(x+width-radius + x1, y+height-radius + y1);
+	    SetDot(x+width-radius + y1, y+height-radius + x1);
+
+	    SetDot(x+radius - x1, y+height-radius + y1);
+	    SetDot(x+radius - y1, y+height-radius + x1);
+
+	    if (tSwitch < 0) {
+	    	tSwitch += (4 * x1 + 6);
+	    } else {
+	    	tSwitch += (4 * (x1 - y1) + 10);
+	    	y1--;
+	    }
+	    x1++;
+	}
+	  	
+	DrawHLine(x+radius, y, width-(2*radius));			/* top    */
+	DrawHLine(x+radius, y+height, width-(2*radius));	/* bottom */
+	DrawVLine(x, y+radius, height-(2*radius));			/* left   */
+	DrawVLine(x+width, y+radius, height-(2*radius));	/* right  */
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void DrawCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius)
+ * @brief Draw a Circle.
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::DrawCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius)
+{
+   DrawRoundRect(xCenter-radius, yCenter-radius, 2*radius, 2*radius, radius);
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
+ * @brief Draw a Filled in a Circle.
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::FillCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius)
+{
+	int f = 1 - radius;
+	int ddF_x = 1;
+	int ddF_y = -2 * radius;
+	uint8_t x = 0;
+	uint8_t y = radius;
+
+	/*
+	 * Fill in the center between the two halves
+	 */
+	DrawLine(xCenter, yCenter-radius, xCenter, yCenter+radius);
+ 
+	while(x < y){
+		if(f >= 0) {
+			y--;
+			ddF_y += 2;
+			f += ddF_y;
+		}
+		x++;
+		ddF_x += 2;
+		f += ddF_x;    
+
+		/*
+		 * Now draw vertical lines between the points on the circle rather than
+		 * draw the points of the circle. This draws lines between the 
+		 * perimeter points on the upper and lower quadrants of the 2 halves of the circle.
+		 */
+		DrawLine(xCenter+x, yCenter+y, xCenter+x, yCenter-y);
+		DrawLine(xCenter-x, yCenter+y, xCenter-x, yCenter-y);
+		DrawLine(xCenter+y, yCenter+x, y+xCenter, yCenter-x);
+		DrawLine(xCenter-y, yCenter+x, xCenter-y, yCenter-x);
+  	}
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/
