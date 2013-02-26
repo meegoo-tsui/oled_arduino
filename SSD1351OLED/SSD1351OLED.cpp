@@ -808,15 +808,15 @@ void SSD1351OLED::DrawFace()
 {
 	byte hr, x, y ;
 
-	this->Box( x_centre, y_centre ) ; // draw center box
+	Box( x_centre, y_centre ) ; // draw center box
 
 	/* draw hour marks or numerals around the clock face */
 	for( hr = 0; hr < 60; hr += 5 ) {
 	  if ( !( hr % 15 ) )
-		 this->SegBox( hr ) ; /* draw quarter hour shapes */
+		 SegBox( hr ) ; /* draw quarter hour shapes */
 	  else{
-		 this->CalcHands( hr, radius, &x, &y ) ;
-	     this->Box( x, y ) ;
+		 CalcHands( hr, radius, &x, &y ) ;
+	     Box( x, y ) ;
 	  }
 	}
 }
