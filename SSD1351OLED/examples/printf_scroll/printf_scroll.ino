@@ -74,7 +74,8 @@ void setup(void)
 void loop(void)
 {
 	uint8_t i;
-	
+
+	SSD1351Oled.Printf("Demo - printf and scroll\n");
 	for(i=0; i<4; i++){
 		SSD1351Oled.Rotate(i);
 		print_test();

@@ -62,6 +62,9 @@ typedef enum
 } ssd1351Cmd_e;
 
 /* Exported constants --------------------------------------------------------*/
+#define SSD1351OLED_DEBUG                 1               /* Debug mode ctrl  */
+#define SSD1351OLED_BAUD                  57600
+
 #define R0                                0
 #define R90                               1
 #define R180                              2
@@ -80,6 +83,7 @@ typedef enum
 class SSD1351OLED {
 public:
 	void Init(void);
+	void Printf(char *fmt, ...);
 	void SetDot(uint8_t x,uint8_t y);
 	void FillRGB(uint8_t r,uint8_t g,uint8_t b);
 	void FillRGBEx(uint8_t r,uint8_t g,uint8_t b, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);

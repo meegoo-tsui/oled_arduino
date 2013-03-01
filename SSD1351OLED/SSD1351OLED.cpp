@@ -177,6 +177,29 @@ void SSD1351OLED::Init(void)
 	WriteData(0xAA);
 	WriteData(0xAF);
 	WriteData(0xB4);
+
+#if SSD1351OLED_DEBUG
+	Serial.begin(SSD1351OLED_BAUD);
+#endif
+}
+
+/******************************************************************************/
+/*!
+ * @fn    void Printf(char *fmt, ...)
+ * @brief ∑¢ÀÕ√¸¡ÓµΩ1351°£
+ * \author meegoo (2013/01/30)
+ */
+void SSD1351OLED::Printf(char *fmt, ...)
+{
+#if SSD1351OLED_DEBUG
+	char tmp[128]; /* resulting string limited to 128 chars */
+
+	va_list args;
+	va_start (args, fmt );
+	vsnprintf(tmp, 128, fmt, args);
+	va_end (args);
+	Serial.print(tmp);
+#endif
 }
 
 /******************************************************************************/

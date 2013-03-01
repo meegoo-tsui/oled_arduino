@@ -11,6 +11,7 @@ SSD1351OLED	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 Init	KEYWORD1
+Printf	KEYWORD1
 SetDot	SetDot
 FillRGB	KEYWORD1
 FillRGBEx	KEYWORD1
