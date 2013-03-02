@@ -180,6 +180,8 @@ void SSD1351OLED::Init(void)
 
 #if SSD1351OLED_DEBUG
 	Serial.begin(SSD1351OLED_BAUD);
+	while (!Serial);
+	Printf("Ready ....\r\n");
 #endif
 }
 
@@ -868,7 +870,8 @@ void SSD1351OLED::SegBox( byte FaceAngle )
 			GotoXY(x_centre-6,  y_centre - radius -1 );		       
 			break;
 		case 1 : // 3 oclock
-			GotoXY(x_centre + radius - 3,  y_centre -3 );
+			GotoXY(x_centre -3 + radius,  y_centre -3 );
+			GotoXY(121,  61 );
 			break;
 		case 2 : // 6 oclock
 			GotoXY(x_centre-2,  y_centre + radius -5);
@@ -877,7 +880,17 @@ void SSD1351OLED::SegBox( byte FaceAngle )
 			GotoXY(x_centre- radius ,  y_centre -3 );
 			break;
 	}
+
 	PrintNumber(hour);
+
+#if SSD1351OLED_DEBUG
+	Printf("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+	Printf("quadrant: %d\n", quadrant);
+	Printf("x_centre: %d\n", x_centre);
+	Printf("y_centre: %d\n", y_centre);
+	Printf("radius:   %d\n", radius);
+	Printf("[%d, %d]: %d\n", pos_x, pos_y, hour);
+#endif
 }
 
 void SSD1351OLED::PrintNumber(long n)

@@ -57,6 +57,8 @@ void setup(void)
 
 	SSD1351Oled.AnalogClockInit(SSD1351Oled.CenterX,SSD1351Oled.CenterY,SSD1351Oled.CenterY-4);
 	SSD1351Oled.DisplayTime(12, 15, 30); 
+
+	SSD1351Oled.Printf("Demo - analog clock\n");
 }
 
 /******************************************************************************/
