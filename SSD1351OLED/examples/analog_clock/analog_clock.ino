@@ -55,10 +55,8 @@ void setup(void)
 	delay(3000);
 	SSD1351Oled.FillRGB(0x00, 0x00, 0x00);
 
-	SSD1351Oled.AnalogClockInit(SSD1351Oled.CenterX,SSD1351Oled.CenterY,SSD1351Oled.CenterY-4);
-	SSD1351Oled.DisplayTime(12, 15, 30); 
-
 	SSD1351Oled.Printf("Demo - analog clock\n");
+	SSD1351Oled.AnalogClockInit(SSD1351Oled.CenterX,SSD1351Oled.CenterY,SSD1351Oled.CenterY-4);
 }
 
 /******************************************************************************/
@@ -69,6 +67,14 @@ void setup(void)
  */
 void loop(void)
 {
+	byte i;
+
+	i = 0;
+	while(1){
+	    i = i%60;
+		SSD1351Oled.DisplayTime(12, 45, i++);
+		delay(1000);
+	}
 }
 
 /********************** (C) COPYRIGHT 2013 meegoo tsui  *********END OF FILE***/

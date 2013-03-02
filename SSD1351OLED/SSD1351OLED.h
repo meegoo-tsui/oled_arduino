@@ -62,7 +62,7 @@ typedef enum
 } ssd1351Cmd_e;
 
 /* Exported constants --------------------------------------------------------*/
-#define SSD1351OLED_DEBUG                 1               /* Debug mode ctrl  */
+#define SSD1351OLED_DEBUG                 0               /* Debug mode ctrl  */
 #define SSD1351OLED_BAUD                  57600
 
 #define R0                                0

@@ -761,7 +761,7 @@ void SSD1351OLED::AnalogClockInit(byte x, byte y, byte r)
 	radius = r ;
 	l_hour =  r / 2 ; // hour hand is half radius
 	l_minute = (r*3) / 4 ;  // minute hand is 3/4 radius
-	l_second  = l_minute + 1;  // second hand is 2 pixels larger than minute
+	l_second  = l_minute + 2;  // second hand is 2 pixels larger than minute
 
 	/* Initialise previous positions of hour and minute hand */
 	PX_Hour = PX_Minute = PX_Second = x_centre ;
@@ -774,14 +774,26 @@ void SSD1351OLED::DisplayTime( byte hours, byte minutes, byte seconds )
 /* draw the hands at the specified positions */
 {
 	byte angle ;
-
+	uint8_t font_color_1_bak, font_color_2_bak;
+	
 	if( hours == 0 )
            hours = 12 ;
 
 	/* erase previous hands */
+	font_color_1_bak = font_color_1;
+	font_color_2_bak = font_color_2;
+	font_color_1 = 0;
+	font_color_2 = 0;
 	DrawLine( x_centre, y_centre, PX_Hour, PY_Hour) ;
 	DrawLine( x_centre, y_centre, PX_Minute, PY_Minute) ;
-	DrawCircle(PX_Second, PY_Second,1);
+	DrawLine( x_centre, y_centre, PX_Second, PY_Second) ;
+	font_color_1 = font_color_1_bak;
+	font_color_2 = font_color_2_bak;
+
+	/* calculate new position of minute hand and draw it */
+	angle = seconds ;
+	CalcHands( angle, l_second, &PX_Second, &PY_Second) ;
+	DrawLine( x_centre, y_centre, PX_Second, PY_Second) ;
 
 	/* calculate new position of minute hand and draw it */
 	angle = minutes ;
@@ -792,15 +804,16 @@ void SSD1351OLED::DisplayTime( byte hours, byte minutes, byte seconds )
 	angle = ( ( 5*hours ) + ( minutes/12 ) ) % 60 ;
 	CalcHands( angle, l_hour, &PX_Hour, &PY_Hour) ;
 	DrawLine( x_centre, y_centre, PX_Hour, PY_Hour);
-
-	/* calculate new position of second hand and draw if requested */
-	if( seconds != -1) {
-		CalcHands( seconds, l_second, &PX_Second, &PY_Second ) ;
-		DrawCircle(PX_Second, PY_Second,1);
-	}
-        
+  
 	/* re-draw clock centre */
 	Box( x_centre, y_centre) ;
+
+#if SSD1351OLED_DEBUG
+	Printf("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+	Printf("hours:   %d @ (%d, %d).%d\n", hours,   PX_Hour,   PY_Hour,   l_hour);
+	Printf("minutes: %d @ (%d, %d).%d\n", minutes, PX_Minute, PY_Minute, l_minute);
+	Printf("seconds: %d @ (%d, %d).%d\n", seconds, PX_Second, PX_Second, l_second);
+#endif
 }
 
 void SSD1351OLED::CalcHands( byte angle, byte radius, byte *x, byte *y )
@@ -870,8 +883,7 @@ void SSD1351OLED::SegBox( byte FaceAngle )
 			GotoXY(x_centre-6,  y_centre - radius -1 );		       
 			break;
 		case 1 : // 3 oclock
-			GotoXY(x_centre -3 + radius,  y_centre -3 );
-			GotoXY(121,  61 );
+			GotoXY(x_centre -6 + radius,  y_centre -3 );
 			break;
 		case 2 : // 6 oclock
 			GotoXY(x_centre-2,  y_centre + radius -5);
@@ -881,8 +893,6 @@ void SSD1351OLED::SegBox( byte FaceAngle )
 			break;
 	}
 
-	PrintNumber(hour);
-
 #if SSD1351OLED_DEBUG
 	Printf("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 	Printf("quadrant: %d\n", quadrant);
@@ -891,6 +901,8 @@ void SSD1351OLED::SegBox( byte FaceAngle )
 	Printf("radius:   %d\n", radius);
 	Printf("[%d, %d]: %d\n", pos_x, pos_y, hour);
 #endif
+
+	PrintNumber(hour);
 }
 
 void SSD1351OLED::PrintNumber(long n)
