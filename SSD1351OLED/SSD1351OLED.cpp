@@ -480,8 +480,6 @@ void SSD1351OLED::SetFontColor(uint8_t r,uint8_t g,uint8_t b)
  * @fn    void HorizontalScroll(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint8_t e)
  * @brief Ë®Æ½ÒÆ¶¯¡£
  * \author meegoo (2013/02/05)
- */
-/*
  * OLED horizontal scroll
  *  a: 0x00     ..no scrolling
  *     0x01-0x3f..scroll towards SEG127 with 1 column offset
@@ -750,26 +748,40 @@ void SSD1351OLED::FillCircle(uint8_t xCenter, uint8_t yCenter, uint8_t radius)
   	}
 }
 
+/******************************************************************************/
+/*!
+ * @fn    void AnalogClockInit(byte x, byte y, byte r)
+ * @brief Analog Clock Init.
+ * \author meegoo (2013/02/05)
+ */
 /* Look-up sine table for integer math */
 byte byteSine[16] = {0,  27,  54,  79, 104, 128, 150, 171, 190, 201, 221, 233, 243, 250, 254, 255} ;
-
 void SSD1351OLED::AnalogClockInit(byte x, byte y, byte r)
 {
 	/* calculate sizes and position of clock */
 	x_centre = x ;
 	y_centre = y ;
 	radius = r ;
-	l_hour =  r / 2 ; // hour hand is half radius
-	l_minute = (r*3) / 4 ;  // minute hand is 3/4 radius
-	l_second  = l_minute + 2;  // second hand is 2 pixels larger than minute
+	l_hour =  r / 2 ;           /* hour hand is half radius                   */
+	l_minute = (r*3) / 4 ;      /* minute hand is 3/4 radius                  */
+	l_second  = l_minute + 2;   /* second hand is 2 pixels larger than minute */
 
 	/* Initialise previous positions of hour and minute hand */
+	hLine = 0;
+	mLine = 0;
+	sLine = 0;
 	PX_Hour = PX_Minute = PX_Second = x_centre ;
 	PY_Hour = PY_Minute = PY_Second = y_centre ;
-	DrawCircle(x,y, r + 3); // draw the surrounding circle
-	DrawFace() ; /* draw the clock dial       */
+	DrawCircle(x,y, r + 3);                    /* draw the surrounding circle */
+	DrawFace() ;                                 /* draw the clock dial       */
 }
 
+/******************************************************************************/
+/*!
+ * @fn    void DisplayTime( byte hours, byte minutes, byte seconds )
+ * @brief Display Time.
+ * \author meegoo (2013/02/05)
+ */
 void SSD1351OLED::DisplayTime( byte hours, byte minutes, byte seconds )
 /* draw the hands at the specified positions */
 {
@@ -784,13 +796,22 @@ void SSD1351OLED::DisplayTime( byte hours, byte minutes, byte seconds )
 	font_color_2_bak = font_color_2;
 	font_color_1 = 0;
 	font_color_2 = 0;
-	DrawLine( x_centre, y_centre, PX_Hour, PY_Hour) ;
-	DrawLine( x_centre, y_centre, PX_Minute, PY_Minute) ;
-	DrawLine( x_centre, y_centre, PX_Second, PY_Second) ;
+	if(hLine != hours){
+		DrawLine( x_centre, y_centre, PX_Hour, PY_Hour) ;
+		hLine = hours;
+	}
+	if(mLine != minutes){
+		DrawLine( x_centre, y_centre, PX_Minute, PY_Minute) ;
+		mLine = minutes;
+	}
+	if(sLine != seconds){
+		DrawLine( x_centre, y_centre, PX_Second, PY_Second) ;
+		sLine = seconds;
+	}
 	font_color_1 = font_color_1_bak;
 	font_color_2 = font_color_2_bak;
 
-	/* calculate new position of minute hand and draw it */
+	/* calculate new position of second hand and draw it */
 	angle = seconds ;
 	CalcHands( angle, l_second, &PX_Second, &PY_Second) ;
 	DrawLine( x_centre, y_centre, PX_Second, PY_Second) ;
@@ -816,11 +837,17 @@ void SSD1351OLED::DisplayTime( byte hours, byte minutes, byte seconds )
 #endif
 }
 
+/******************************************************************************/
+/*!
+ * @fn    void CalcHands( byte angle, byte radius, byte *x, byte *y )
+ * @brief Calc Hands.
+ * \author meegoo (2013/02/05)
+ * angle is location of hand on dial (0-60)
+ * radius is length of hand
+ * *x   return x-coordinate of hand on dial face
+ * *y   return y-coordinate of hand on dial face
+ */
 void SSD1351OLED::CalcHands( byte angle, byte radius, byte *x, byte *y )
-/* angle is location of hand on dial (0-60)          */
-/* radius is length of hand                           */
-/* *x   return x-coordinate of hand on dial face */
-/* *y   return y-coordinate of hand on dial face */
 {
 	short quadrant, x_flip, y_flip ;
 
@@ -841,34 +868,51 @@ void SSD1351OLED::CalcHands( byte angle, byte radius, byte *x, byte *y )
 	*y += ( y_flip*(( byteSine[15-angle]*radius ) >> 8 )) ;
 }
 
-void SSD1351OLED::DrawFace()
+/******************************************************************************/
+/*!
+ * @fn    void DrawFace(void)
+ * @brief Draw Face.
+ * \author meegoo (2013/02/05)
+ */
+void SSD1351OLED::DrawFace(void)
 /* draw clock face */
 {
 	byte hr, x, y ;
 
-	Box( x_centre, y_centre ) ; // draw center box
+	Box( x_centre, y_centre ) ;                            /* draw center box */
 
 	/* draw hour marks or numerals around the clock face */
 	for( hr = 0; hr < 60; hr += 5 ) {
 	  if ( !( hr % 15 ) )
-		 SegBox( hr ) ; /* draw quarter hour shapes */
+		 SegBox( hr ) ;                           /* draw quarter hour shapes */
 	  else{
 		 CalcHands( hr, radius, &x, &y ) ;
 	     Box( x, y ) ;
 	  }
 	}
 }
+
+/******************************************************************************/
+/*!
+ * @fn    void Box( byte x, byte y  )
+ * @brief draw a 3 x 3 pixel box centered at x,y.
+ * \author meegoo (2013/02/05)
+ */
 void SSD1351OLED::Box( byte x, byte y  )
-/* draw a 3 x 3 pixel box centered at x,y */
 {
 	DrawLine( x-1, y-1, x+1, y-1) ;
 	DrawLine( x-1, y,   x+1, y) ;
 	DrawLine( x-1, y+1, x+1, y+1) ;	
 }
 
+/******************************************************************************/
+/*!
+ * @fn    void SegBox( byte FaceAngle )
+ * @brief draw quarter hour dial markers.
+ *        FaceAngle is position of marker around face (0-55)
+ * \author meegoo (2013/02/05)
+ */
 void SSD1351OLED::SegBox( byte FaceAngle )
-/* draw quarter hour dial markers */
-/* FaceAngle is position of marker around face (0-55) */
 {
 	byte quadrant;
 	byte hour; 
@@ -905,23 +949,31 @@ void SSD1351OLED::SegBox( byte FaceAngle )
 	PrintNumber(hour);
 }
 
+/******************************************************************************/
+/*!
+ * @fn    void PrintNumber(long n)
+ * @brief Print Number.
+ * \author meegoo (2013/02/05)
+ */
 void SSD1351OLED::PrintNumber(long n)
 {
-	uint8_t buf[10];  // prints up to 10 digits  
+	uint8_t buf[10];                                /* prints up to 10 digits */
 	uint8_t i=0;
-	if(n==0)
+	if(n==0){
 		PutChar('0');
+	}
 	else{
 		if(n < 0){
 			PutChar('-');
 			n = -n;
 		}
 		while(n>0 && i <= 10){
-			buf[i++] = n % 10;  // n % base
-			n /= 10;   // n/= base
+			buf[i++] = n % 10;
+			n /= 10;
 		}
-		for(; i >0; i--)
-			PutChar((char) (buf[i-1] < 10 ? '0' + buf[i-1] : 'A' + buf[i-1] - 10));	  
+		for(; i >0; i--){
+			PutChar((char) (buf[i-1] < 10 ? '0' + buf[i-1] : 'A' + buf[i-1] - 10));
+		}
 	}
 }
 

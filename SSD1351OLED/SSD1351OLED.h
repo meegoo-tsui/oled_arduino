@@ -112,7 +112,7 @@ public:
 	void DisplayTime( byte hours, byte minutes, byte seconds = -1 ); // draw hands in the position for the given hours and minutes 
 	void PrintNumber(long n);
 
-		//Device Properties - these are read only constants	 
+	/* Device Properties - these are read only constants */	 
 	static const uint8_t Width = DISPLAY_WIDTH; 	/**< Display width in pixels */
 	static const uint8_t Height = DISPLAY_HEIGHT;	/**< Display height in pixels */
 	static const uint8_t Right = DISPLAY_WIDTH-1;	/**< Right most pixel on Display (equals Width -1)*/
@@ -151,8 +151,13 @@ private:
 	byte DateRow    ; /* row position of date string      */
 	byte DateColumn ; /* column position of date string   */
 
+	/* Backup for draw line */
+	byte hLine      ; /* current hours for line           */
+	byte mLine      ; /* current minutes for line         */
+	byte sLine      ; /* current seconds for line         */
+
 	void CalcHands( byte angle, byte radius, byte *x, byte *y );
-	void DrawFace();
+	void DrawFace(void);
 	void Box( byte x, byte y );
 	void SegBox( byte FaceAngle );
 
