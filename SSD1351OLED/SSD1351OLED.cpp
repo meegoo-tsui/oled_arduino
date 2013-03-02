@@ -796,9 +796,10 @@ void SSD1351OLED::DisplayTime( byte hours, byte minutes, byte seconds )
 	font_color_2_bak = font_color_2;
 	font_color_1 = 0;
 	font_color_2 = 0;
-	if(hLine != hours){
+	angle = ( ( 5*hours ) + ( minutes/12 ) ) % 60 ;
+	if(hLine != angle){
 		DrawLine( x_centre, y_centre, PX_Hour, PY_Hour) ;
-		hLine = hours;
+		hLine = angle;
 	}
 	if(mLine != minutes){
 		DrawLine( x_centre, y_centre, PX_Minute, PY_Minute) ;
@@ -822,7 +823,7 @@ void SSD1351OLED::DisplayTime( byte hours, byte minutes, byte seconds )
 	DrawLine( x_centre, y_centre, PX_Minute, PY_Minute) ;
 
 	/* calculate new position of hour hand and draw it */
-	angle = ( ( 5*hours ) + ( minutes/12 ) ) % 60 ;
+	angle = hLine ;
 	CalcHands( angle, l_hour, &PX_Hour, &PY_Hour) ;
 	DrawLine( x_centre, y_centre, PX_Hour, PY_Hour);
   
