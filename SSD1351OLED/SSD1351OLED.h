@@ -98,6 +98,7 @@ public:
 	void HorizontalScroll(uint8_t a, uint8_t b, uint8_t c, uint8_t d, uint8_t e);
 	void StopMoving(void);
 	void StartMoving(void);
+	void SetContrast(uint8_t level);
 	void FadeIn(void);
 	void FadeOut(void);
 	void DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);

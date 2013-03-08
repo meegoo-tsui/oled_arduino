@@ -26,6 +26,7 @@ SetFontColor	KEYWORD1
 HorizontalScroll	KEYWORD1
 StopMoving	KEYWORD1
 StartMoving	KEYWORD1
+SetContrast	KEYWORD1
 FadeIn	KEYWORD1
 FadeOut	KEYWORD1
 DrawLine	KEYWORD1

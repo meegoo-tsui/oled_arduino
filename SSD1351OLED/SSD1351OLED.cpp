@@ -534,6 +534,22 @@ void SSD1351OLED::StartMoving(void)
 
 /******************************************************************************/
 /*!
+ * @fn    SetContrast(uint8_t level)
+ * @brief Set Contrast
+ * \author meegoo (2013/03/08)
+ */
+void SSD1351OLED::SetContrast(uint8_t level)
+{
+	if(level > MAX_BRIGHTNESS){
+		return;
+	}
+	WriteCommand(SSD1351_CMD_MASTERCONTRAST);
+	WriteData(level);
+	Enable(level);
+}
+
+/******************************************************************************/
+/*!
  * @fn    void FadeIn(void)
  * @brief Fade in (Full Screen)¡£
  * \author meegoo (2013/02/05)
@@ -542,10 +558,8 @@ void SSD1351OLED::FadeIn(void)
 {
 	uint8_t i;
 
-	Enable(0x01);
 	for(i=0; i<(MAX_BRIGHTNESS + 1); i++){
-		WriteCommand(SSD1351_CMD_MASTERCONTRAST);
-		WriteData(i);
+		SetContrast(i);
 		delay(FADE_DELAY);
 	}
 }
@@ -561,11 +575,9 @@ void SSD1351OLED::FadeOut(void)
 	uint8_t i;
 
 	for(i=0; i<(MAX_BRIGHTNESS + 1); i++){
-		WriteCommand(SSD1351_CMD_MASTERCONTRAST);
-		WriteData(MAX_BRIGHTNESS - i);
+		SetContrast(MAX_BRIGHTNESS - i);
 		delay(FADE_DELAY);
 	}
-	Enable(0x00);
 }
 
 /******************************************************************************/
